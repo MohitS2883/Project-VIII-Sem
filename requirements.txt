@@ -1,0 +1,16 @@
+# Core dependencies
+langchain-core
+langgraph
+pydantic
+requests
+websocket-client
+PyJWT
+python-dotenv
+
+
+# IBM Watsonx SDKs
+langchain-ibm
+ibm-watson-machine-learning
+
+# Optional for performance (if used elsewhere)
+functools32 ; python_version < '3.2'

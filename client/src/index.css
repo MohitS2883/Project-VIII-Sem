@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* For webkit browsers (Chrome, Safari) */
+.overflow-y-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* For Firefox */
+.overflow-y-scroll {
+    scrollbar-width: none; /* Hide scrollbar */
+}
