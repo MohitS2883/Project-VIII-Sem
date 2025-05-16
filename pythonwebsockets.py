@@ -280,23 +280,26 @@ def on_error(ws, error):
 def on_close(ws, close_status_code, close_msg):
     print("WebSocket closed")
 
+def connect_ws():
+    while True:
+        try:
+            ws = websocket.WebSocketApp(
+                "ws://localhost:3000",
+                header={ "Cookie": f"token={token}" },
+                on_open=on_open,
+                on_message=on_message,
+                on_error=on_error,
+                on_close=on_close
+            )
+
+            ws.run_forever()
+
+        except Exception as e:
+            print("WebSocket connection error:", e)
+
+        print("Disconnected. Reconnecting in 1 second...")
+        time.sleep(1)  # Wait before reconnecting
+
 if __name__ == "__main__":
-    ws_url = "ws://localhost:3000"
-
-    headers = {
-        "Cookie": f"token={token}"
-    }
-
-    ws = websocket.WebSocketApp(
-        ws_url,
-        header=headers,
-        on_open=on_open,
-        on_message=on_message,
-        on_error=on_error,
-        on_close=on_close
-    )
-
-    thread = threading.Thread(target=ws.run_forever)
-    thread.start()
-
+    threading.Thread(target=connect_ws, daemon=True).start()
     input("Press Enter to quit...\n")

@@ -119,6 +119,11 @@ app.get('/messages/:userId',async (req,res) => {
     res.json(messages)
 })
 
+app.get('/people',async(req,res) =>{
+    const users = await User.find({},{'_id':1,username:1})
+    res.json(users)
+})
+
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -126,6 +131,29 @@ const server = app.listen(PORT, () => {
 
 const wss = new ws.WebSocketServer({server});
 wss.on('connection',(connection, req) => {
+
+    function notifyAboutOnlinePeople() {
+        Array.from(wss.clients).forEach(currentClient => {
+            const onlineUsers = Array.from(wss.clients).map(otherClient => ({
+                userId: otherClient.userId,
+                username: otherClient.username
+            }));
+
+            currentClient.send(JSON.stringify({ online: onlineUsers }));
+        });
+    }
+    connection.alive = true;
+    connection.timer = setInterval(() => {
+        connection.ping()
+        connection.deathTimer = setTimeout(() => {
+            connection.isAlive = false;
+            connection.terminate();
+
+        },10000)
+    },10000)
+    connection.on('pong',() => {
+        clearTimeout(connection.deathTimer)
+    })
     // read username and id from the cookie for this connection
     const cookies = req.headers.cookie
     if(cookies) {
@@ -144,33 +172,39 @@ wss.on('connection',(connection, req) => {
         }
     }
     connection.on('message', async (message) => {
-        const messageData = JSON.parse(message.toString());
-        const {recipient,text} = messageData;
-        if(recipient && text) {
-            const messageDoc = await Message.create({
-                sender: new mongoose.Types.ObjectId(connection.userId),
-                recipient: new mongoose.Types.ObjectId(recipient),
-                text: text
-            });
+        try {
+            const messageData = JSON.parse(message.toString());
+            const { recipient, text } = messageData;
 
-            Array.from(wss.clients)
-                .filter(c => c.userId == recipient)
-                .forEach(c => c.send(JSON.stringify({
-                    text,
-                    sender:connection.userId,
-                    recipient:recipient,
-                    _id:messageDoc._id
-                })))
+            // Defensive checks
+            if (!connection.userId || !text) return;
+
+            if (recipient) {
+                const messageDoc = await Message.create({
+                    sender: new mongoose.Types.ObjectId(connection.userId),
+                    recipient: new mongoose.Types.ObjectId(recipient),
+                    text: text
+                });
+
+                Array.from(wss.clients)
+                    .filter(c => c.userId === recipient)
+                    .forEach(c =>
+                        c.send(JSON.stringify({
+                            text,
+                            sender: connection.userId,
+                            recipient,
+                            _id: messageDoc._id
+                        }))
+                    );
+            }
+        } catch (e) {
+            console.error("WebSocket message error:", e.message);
         }
-    })
-    //notify everyone online people (when someone connects)
-    Array.from(wss.clients).forEach(currentClient => {
-        const onlineUsers = Array.from(wss.clients).map(otherClient => ({
-            userId: otherClient.userId,
-            username: otherClient.username
-        }));
-
-        currentClient.send(JSON.stringify({ online: onlineUsers }));
     });
+    //notify everyone online people (when someone connects)
+    notifyAboutOnlinePeople()
+})
 
+wss.on('close',(data) => {
+    console.log('Connection closed',data)
 })

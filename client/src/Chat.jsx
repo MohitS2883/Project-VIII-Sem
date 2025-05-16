@@ -5,15 +5,20 @@ import { UserContext } from "./UserContext.jsx";
 import { uniqBy } from "lodash";
 import axios from "axios";
 import FlightCard from "./components/FlightCard.jsx";
+import Contact from "./components/Contact.jsx";
 
 export default function Chat() {
     const [ws, setWs] = useState(null);
     const [onlinePeople, setOnlinePeople] = useState({});
+    const [offlinePeople, setOfflinePeople] = useState({});
     const [selectedUser, setSelectedUser] = useState(null);
     const [newMessageText, setNewMessageText] = useState('');
     const [messages, setMessages] = useState([]);
     const { username, id } = useContext(UserContext);
     const divUnderMessages = useRef(null);
+    const BOT_ID = "60b8d295f7f6d632d8b53cd4";
+    const BOT_USERNAME = "python-bot";
+
 
     useEffect(() => {
         connectToWebSocket();
@@ -75,6 +80,19 @@ export default function Chat() {
         }]);
     }
 
+    useEffect(() => {
+        axios.get('/people').then(res => {
+            const offlinePeopleArr = res.data
+                .filter(person => person._id !== id)
+                .filter(p => !Object.keys(onlinePeople).includes(p._id));
+            const offlinePeopleObj = {};
+            offlinePeopleArr.forEach(p => {
+                offlinePeopleObj[p._id] = p.username;
+            })
+            setOfflinePeople(offlinePeopleObj);
+        })
+    }, [onlinePeople])
+
     function parseFlightsFromMessage(text) {
         const flights = [];
         const regex = /\*\*(.*?)\*\*\s+- Departure: (.*?)\s+- Arrival: (.*?)\s+- Duration: (.*?)\s+- Airplane: (.*?)\s+- Travel Class: (.*?)\s+- Flight Number: (.*?)\s+(?:- Legroom: (.*?)\s+)?- Carbon Emissions: (.*?)\s+- Price: (\$\d+)/g;
@@ -106,19 +124,25 @@ export default function Chat() {
         <div className="flex h-screen">
             <div className="bg-gradient-to-b from-gray-50 to-gray-100 w-1/4">
                 <Logo />
-                {Object.keys(onlinePeopleExcludingOurUser).map(userId => (
-                    <div key={userId}
-                         onClick={() => setSelectedUser(userId)}
-                         className={`flex items-center gap-2 border-b border-gray-200 cursor-pointer ${userId === selectedUser ? 'bg-indigo-100' : ''}`}>
-                        {userId === selectedUser && (
-                            <div className='w-1 bg-indigo-500 h-12 rounded-r-md'></div>
-                        )}
-                        <div className="flex gap-2 py-2 pl-4 items-center">
-                            <Avatar username={onlinePeople[userId]} userId={userId} />
-                            <span className="text-gray-800">{onlinePeople[userId]}</span>
-                        </div>
-                    </div>
-                ))}
+                {Object.keys(onlinePeopleExcludingOurUser).includes(BOT_ID) ? (
+                    <Contact
+                        key={BOT_ID}
+                        online={true}
+                        id={BOT_ID}
+                        username={BOT_USERNAME}
+                        setSelectedUser={setSelectedUser}
+                        selected={BOT_ID === selectedUser}
+                    />
+                ) : (
+                    <Contact
+                        key={BOT_ID}
+                        online={false}
+                        id={BOT_ID}
+                        username={BOT_USERNAME}
+                        setSelectedUser={setSelectedUser}
+                        selected={BOT_ID === selectedUser}
+                    />
+                )}
             </div>
             <div className="flex flex-col bg-indigo-50 w-3/4 p-4">
                 <div className="flex-grow">
