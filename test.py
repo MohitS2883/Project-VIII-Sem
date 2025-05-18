@@ -4,26 +4,25 @@ import websocket
 import threading
 import json
 import time
-import os, json, re, requests
+import os, re, requests
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, TypedDict
-from langchain_core.tools import tool
 from functools import lru_cache
 
 from pydantic import BaseModel, Field
-from langchain_core.messages import (
-    HumanMessage,
-    AIMessage,
-    ToolMessage,
-)
-from langgraph.graph import StateGraph, END, START
-from langgraph.prebuilt import ToolNode, tools_condition 
+
+from langchain_core.tools import tool
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage, SystemMessage
+from langgraph.graph import StateGraph, END
+from langgraph.prebuilt import tools_condition
 
 from langchain_ibm import ChatWatsonx
 from ibm_watson_machine_learning.metanames import GenTextParamsMetaNames as GenParams
 from dotenv import load_dotenv
 load_dotenv()
 
+
+### ===== MODEL SETUP =====
 
 credentials = {
     "url": os.getenv("URL"),
@@ -63,7 +62,7 @@ def _call_serpapi(payload: Dict[str, Any]) -> Dict[str, Any]:
     r.raise_for_status()
     return r.json()
 
-CITIES_JSON = "cities.json"        
+CITIES_JSON = "cities.json"
 
 @lru_cache(maxsize=1)
 def _load_cities() -> dict[str, str]:
@@ -90,7 +89,6 @@ def city_code(city_name: str) -> str:
     If the city is unknown, returns 'UNK'.
     """
     return get_city_acronym(city_name)
-
 
 
 @tool
@@ -160,14 +158,16 @@ def hotels_finder(
         return [{"error": str(e)}]
 
 
-TOOLS = {t.name: t for t in (flights_finder, hotels_finder , city_code)}
-llm_with_tools = llm.bind_tools(list(TOOLS.values())) 
 
-from langchain_core.messages import SystemMessage
+TOOLS = {t.name: t for t in (flights_finder, hotels_finder , city_code)}
+llm_with_tools = llm.bind_tools(list(TOOLS.values()))
+
 
 SYSTEM_MSG = SystemMessage(
     content=(
         "You are a travel assistant. "
+        "Always use colon ':' after labels when presenting information, never 'at'. "
+        "For example, say 'Flight details: ...' and not 'Flight details at ...'. "
         "• If the user gives city names, first call the city_code tool to get the IATA codes, "
         "  then pass those codes to flights_finder.\n"
         "• If the user already provides 3‑letter codes, skip city_code.\n"
@@ -180,10 +180,11 @@ class GState(TypedDict):
 
 def chat(state: GState) -> GState:
     """
-    Call Granite WITH tools already bound, so the model can decide to
-    emit `tool_calls` in its AIMessage.
+        Call Granite WITH tools already bound, so the model can decide to
+        emit `tool_calls` in its AIMessage.
     """
-    ai = llm_with_tools.invoke(state["messages"])       # <-- CHANGED
+    ai = llm_with_tools.invoke(state["messages"])
+    print("AI message tool_calls:", getattr(ai, "tool_calls", None))  # DEBUG LOG
     return {"messages": state["messages"] + [ai]}
 
 
@@ -195,27 +196,28 @@ def run_tools(state: GState) -> GState:
     for call in ai_msg.tool_calls or []:
         name = call["name"]
         args = call["args"]
-        call_id = call["id"]          # ← keep the ID coming from Granite
+        call_id = call["id"]
 
+        print(f"Running tool: {name} with args: {args}")
         fn = TOOLS.get(name)
         result = fn.invoke(args) if fn else {"error": f"unknown tool {name}"}
 
         new.append(
             ToolMessage(
                 name=name,
-                tool_call_id=call_id,   # ← REQUIRED FIELD
+                tool_call_id=call_id,
                 content=json.dumps(result, ensure_ascii=False)
             )
         )
 
     return {"messages": new}
 
+
 graph = StateGraph(GState)
 
 graph.add_node("chat",  chat)
 graph.add_node("tools", run_tools)
 
-# branching: does last AI message contain tool_calls?
 def needs_tool(state: GState) -> str:
     last = state["messages"][-1]
     return "need_tool" if getattr(last, "tool_calls", None) else "done"
@@ -226,96 +228,91 @@ graph.add_conditional_edges(
     {"need_tool": "tools", "done": END},
 )
 
-graph.add_edge("tools", "chat")    
-graph.set_entry_point("chat")        
+graph.add_edge("tools", "chat")
+graph.set_entry_point("chat")
 
 assistant = graph.compile()
 
 JWT_SECRET = 'NOIDEAABRO'
 
-# User info (use the same userId and username that exist in your MongoDB)
 USER_ID = "60b8d295f7f6d632d8b53cd4"
 USERNAME = "python-bot"
 
-# Generate JWT token (no expiration or custom options here)
 payload = {
     "userId": USER_ID,
     "username": USERNAME,
-    "iat": int(time.time())  # issued at time
+    "iat": int(time.time())
 }
 token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
 
 print("Generated token:", token)
 
-def on_message(ws, message):
-    print("Received:", message)
 
-    try:
-        data = json.loads(message)  # parse the JSON string
+### ===== TEST HARNESS =====
 
-        # Check if this message has a 'type' field
-        has_type = "type" in data
+TEST_QUERIES = [
+    {
+        "query": "Find flights from Bengaluru to Mumbai tomorrow.",
+        "expected_tools": ["city_code", "flights_finder"],
+        "expected_content_keywords": ["BLR", "BOM", "Flight details:"]
+    },
+    {
+        "query": "Book a hotel in Paris from 2025-06-10 to 2025-06-15 for 2 adults.",
+        "expected_tools": ["hotels_finder"],
+        "expected_content_keywords": ["Paris", "hotel", "2025-06-10"]
+    },
+    {
+        "query": "What is the airport code for New York?",
+        "expected_tools": ["city_code"],
+        "expected_content_keywords": ["JFK", "airport code"]
+    },
+]
 
-        # If it has sender, recipient, and text (a "chat" message)
-        if 'sender' in data and 'recipient' in data and 'text' in data:
-            # Use the text field as input content for your assistant
-            initial_state = {
-                "messages": [
-                    SYSTEM_MSG,
-                    HumanMessage(content=data["text"])
-                ]
-            }
-            out = assistant.invoke(initial_state)
+def test_travel_assistant():
+    for idx, test_case in enumerate(TEST_QUERIES, 1):
+        print(f"\nTest case #{idx}: {test_case['query']}")
 
-            # Build the response, optionally include 'type' if present
-            response = {
-                "sender": USER_ID,
-                "recipient": data["sender"],
-                "text": out["messages"][-1].content,
-                "_id": "temp-id-" + str(time.time())
-            }
-            if has_type:
-                response["type"] = data["type"]
+        initial_state = {
+            "messages": [
+                SYSTEM_MSG,
+                HumanMessage(content=test_case["query"])
+            ]
+        }
 
-            ws.send(json.dumps(response))
-            print("Replied with message",response)
+        # Run assistant to get AI message with tool calls
+        result = assistant.invoke(initial_state)
+        messages = result["messages"]
+        ai_message = messages[-1]
+
+        tools_called = [call["name"] for call in getattr(ai_message, "tool_calls", [])]
+        print(f"Tools called by AI: {tools_called}")
+
+        tools_match = all(tool in tools_called for tool in test_case["expected_tools"])
+        print(f"Expected tools called? {tools_match}")
+
+        if tools_called:
+            new_messages = messages.copy()
+            for call in ai_message.tool_calls:
+                tool_fn = TOOLS.get(call["name"])
+                tool_result = tool_fn.invoke(call["args"]) if tool_fn else {"error": "unknown tool"}
+                new_messages.append(
+                    ToolMessage(
+                        name=call["name"],
+                        tool_call_id=call["id"],
+                        content=json.dumps(tool_result, ensure_ascii=False)
+                    )
+                )
+
+            final_result = assistant.invoke({"messages": new_messages})
+            final_response = final_result["messages"][-1].content
         else:
-            # Handle other types of messages (like the initial online list)
-            print("Message does not contain sender/recipient/text fields, ignoring or handling separately.")
+            final_response = ai_message.content
 
-    except Exception as e:
-        print("Error parsing or handling message:", e)
+        print(f"Assistant final response:\n{final_response}")
 
+        content_checks = [kw.lower() in final_response.lower() for kw in test_case["expected_content_keywords"]]
+        print(f"Response content keywords present? {all(content_checks)}")
 
-def on_open(ws):
-    print("WebSocket connected")
-
-def on_error(ws, error):
-    print("Error:", error)
-
-def on_close(ws, close_status_code, close_msg):
-    print("WebSocket closed")
-
-def connect_ws():
-    while True:
-        try:
-            ws = websocket.WebSocketApp(
-                "ws://localhost:3000",
-                header={ "Cookie": f"token={token}" },
-                on_open=on_open,
-                on_message=on_message,
-                on_error=on_error,
-                on_close=on_close
-            )
-
-            ws.run_forever()
-
-        except Exception as e:
-            print("WebSocket connection error:", e)
-
-        print("Disconnected. Reconnecting in 1 second...")
-        time.sleep(1)  # Wait before reconnecting
 
 if __name__ == "__main__":
-    threading.Thread(target=connect_ws, daemon=True).start()
-    input("Press Enter to quit...\n")
+    test_travel_assistant()
