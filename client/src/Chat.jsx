@@ -24,7 +24,7 @@ export default function Chat() {
     }, []);
 
     function connectToWebSocket() {
-        const ws = new WebSocket('wss://dbcf-2406-7400-104-8b07-5572-7b03-be62-f64d.ngrok-free.app/');
+        const ws = new WebSocket('ws://localhost:3000');
         setWs(ws);
         ws.addEventListener('message', handleMessage);
         ws.addEventListener('close', () => {
@@ -43,7 +43,7 @@ export default function Chat() {
 
     useEffect(() => {
         if (selectedUser) {
-            axios.get('https://dbcf-2406-7400-104-8b07-5572-7b03-be62-f64d.ngrok-free.app/messages/' + selectedUser).then(res => {
+            axios.get('/messages/' + selectedUser).then(res => {
                 setMessages(res.data);
             });
         }
@@ -82,7 +82,7 @@ export default function Chat() {
     }
 
     useEffect(() => {
-        axios.get('https://dbcf-2406-7400-104-8b07-5572-7b03-be62-f64d.ngrok-free.app/people').then(res => {
+        axios.get('/people').then(res => {
             const offlinePeopleArr = res.data
                 .filter(person => person._id !== id)
                 .filter(p => !Object.keys(onlinePeople).includes(p._id));
@@ -156,6 +156,7 @@ export default function Chat() {
                     </div>
                 </div>
             </div>
+
             {/* Main Chat Window */}
             <div className="flex flex-col bg-slate-50 w-3/4 p-4">
                 <div className="flex-grow">
