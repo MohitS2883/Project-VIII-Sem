@@ -1,10 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import Avatar from "./Avatar.jsx";
 import Logo from "./Logo.jsx";
 import { UserContext } from "./UserContext.jsx";
 import { uniqBy } from "lodash";
 import axios from "axios";
-import FlightCard from "./components/FlightCard.jsx";
 import Contact from "./components/Contact.jsx";
 import FlightMessage from "./components/FlightCard.jsx";
 import HotelMessage from "./components/HotelMessage.jsx";
