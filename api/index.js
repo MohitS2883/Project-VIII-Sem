@@ -37,6 +37,14 @@ function getUserDateFromRequest(req) {
         }
     })
 }
+function isFlightMessage(text) {
+    return (text.includes('Departure:') && text.includes('Arrival:')) || (text.includes('Departure') && text.includes('arrival'));
+}
+
+function isHotelMessage(text) {
+    return text.includes('Rate per night:') || text.includes('Description:') || text.includes('Rate');
+}
+
 app.get('/', (req, res) => {
     res.send('Hello, Mohit!');
 });
@@ -142,18 +150,6 @@ wss.on('connection',(connection, req) => {
             currentClient.send(JSON.stringify({ online: onlineUsers }));
         });
     }
-    connection.alive = true;
-    connection.timer = setInterval(() => {
-        connection.ping()
-        connection.deathTimer = setTimeout(() => {
-            connection.isAlive = false;
-            connection.terminate();
-
-        },10000)
-    },10000)
-    connection.on('pong',() => {
-        clearTimeout(connection.deathTimer)
-    })
     // read username and id from the cookie for this connection
     const cookies = req.headers.cookie
     if(cookies) {
@@ -175,6 +171,7 @@ wss.on('connection',(connection, req) => {
         try {
             const messageData = JSON.parse(message.toString());
             const { recipient, text } = messageData;
+            console.log(messageData.text);
 
             // Defensive checks
             if (!connection.userId || !text) return;
@@ -183,8 +180,12 @@ wss.on('connection',(connection, req) => {
                 const messageDoc = await Message.create({
                     sender: new mongoose.Types.ObjectId(connection.userId),
                     recipient: new mongoose.Types.ObjectId(recipient),
-                    text: text
+                    text: text,
+                    type: isFlightMessage(text) ? 'flight' : isHotelMessage(text) ? 'hotel' : 'text',
                 });
+                console.log(isFlightMessage(text))
+                console.log('Saved Message:', messageDoc);
+                console.log('Message data',messageData);
 
                 Array.from(wss.clients)
                     .filter(c => c.userId === recipient)
@@ -193,7 +194,8 @@ wss.on('connection',(connection, req) => {
                             text,
                             sender: connection.userId,
                             recipient,
-                            _id: messageDoc._id
+                            _id: messageDoc._id,
+                            type: isFlightMessage(text) ? 'flight' : isHotelMessage(text) ? 'hotel' : 'text'
                         }))
                     );
             }

@@ -168,6 +168,8 @@ from langchain_core.messages import SystemMessage
 SYSTEM_MSG = SystemMessage(
     content=(
         "You are a travel assistant. "
+        "Always use colon ':' after labels when presenting information, never 'at'. "
+        "For example, say 'Flight details: ...' and not 'Flight details at ...'. "
         "• If the user gives city names, first call the city_code tool to get the IATA codes, "
         "  then pass those codes to flights_finder.\n"
         "• If the user already provides 3‑letter codes, skip city_code.\n"
@@ -248,28 +250,44 @@ token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
 print("Generated token:", token)
 
 def on_message(ws, message):
-    initial_state = {
-        "messages": [
-            SYSTEM_MSG,                
-            HumanMessage(content=message)
-        ]
-    }
     print("Received:", message)
-    out = assistant.invoke(initial_state)
-    print(out["messages"][-1].content)
+
     try:
-        data = json.loads(message)
+        data = json.loads(message)  # parse the JSON string
+
+        # Check if this message has a 'type' field
+        has_type = "type" in data
+
+        # If it has sender, recipient, and text (a "chat" message)
         if 'sender' in data and 'recipient' in data and 'text' in data:
+            # Use the text field as input content for your assistant
+            initial_state = {
+                "messages": [
+                    SYSTEM_MSG,
+                    HumanMessage(content=data["text"])
+                ]
+            }
+            out = assistant.invoke(initial_state)
+
+            # Build the response, optionally include 'type' if present
             response = {
                 "sender": USER_ID,
                 "recipient": data["sender"],
                 "text": out["messages"][-1].content,
                 "_id": "temp-id-" + str(time.time())
             }
+            if has_type:
+                response["type"] = data["type"]
+
             ws.send(json.dumps(response))
-            print("Replied with 'hi'")
+            print("Replied with message",response)
+        else:
+            # Handle other types of messages (like the initial online list)
+            print("Message does not contain sender/recipient/text fields, ignoring or handling separately.")
+
     except Exception as e:
-        print("Error handling message:", e)
+        print("Error parsing or handling message:", e)
+
 
 def on_open(ws):
     print("WebSocket connected")

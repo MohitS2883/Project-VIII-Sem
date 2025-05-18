@@ -6,6 +6,8 @@ import { uniqBy } from "lodash";
 import axios from "axios";
 import FlightCard from "./components/FlightCard.jsx";
 import Contact from "./components/Contact.jsx";
+import FlightMessage from "./components/FlightCard.jsx";
+import HotelMessage from "./components/HotelMessage.jsx";
 
 export default function Chat() {
     const [ws, setWs] = useState(null);
@@ -19,10 +21,10 @@ export default function Chat() {
     const BOT_ID = "60b8d295f7f6d632d8b53cd4";
     const BOT_USERNAME = "python-bot";
 
-
     useEffect(() => {
         connectToWebSocket();
     }, []);
+
     function connectToWebSocket() {
         const ws = new WebSocket('ws://localhost:3000');
         setWs(ws);
@@ -31,9 +33,10 @@ export default function Chat() {
             setTimeout(() => {
                 console.log('Reconnecting...');
                 connectToWebSocket()
-            },1000)
-        })
+            }, 1000)
+        });
     }
+
     useEffect(() => {
         if (divUnderMessages.current) {
             divUnderMessages.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -41,12 +44,12 @@ export default function Chat() {
     }, [messages]);
 
     useEffect(() => {
-        if(selectedUser) {
-            axios.get('/messages/' +selectedUser).then(res => {
-                setMessages(res.data)
-            })
+        if (selectedUser) {
+            axios.get('/messages/' + selectedUser).then(res => {
+                setMessages(res.data);
+            });
         }
-        }, [selectedUser])
+    }, [selectedUser]);
 
     function showOnlinePeople(peopleArray) {
         const people = {};
@@ -88,33 +91,10 @@ export default function Chat() {
             const offlinePeopleObj = {};
             offlinePeopleArr.forEach(p => {
                 offlinePeopleObj[p._id] = p.username;
-            })
-            setOfflinePeople(offlinePeopleObj);
-        })
-    }, [onlinePeople])
-
-    function parseFlightsFromMessage(text) {
-        const flights = [];
-        const regex = /\*\*(.*?)\*\*\s+- Departure: (.*?)\s+- Arrival: (.*?)\s+- Duration: (.*?)\s+- Airplane: (.*?)\s+- Travel Class: (.*?)\s+- Flight Number: (.*?)\s+(?:- Legroom: (.*?)\s+)?- Carbon Emissions: (.*?)\s+- Price: (\$\d+)/g;
-
-        let match;
-        while ((match = regex.exec(text)) !== null) {
-            flights.push({
-                airline: match[1],
-                departure: match[2],
-                arrival: match[3],
-                duration: match[4],
-                airplane: match[5],
-                travelClass: match[6],
-                flightNumber: match[7],
-                legroom: match[8] || null,
-                emissions: match[9],
-                price: match[10]
             });
-        }
-
-        return flights;
-    }
+            setOfflinePeople(offlinePeopleObj);
+        });
+    }, [onlinePeople]);
 
     const onlinePeopleExcludingOurUser = { ...onlinePeople };
     delete onlinePeopleExcludingOurUser[id];
@@ -122,58 +102,75 @@ export default function Chat() {
 
     return (
         <div className="flex h-screen">
-            <div className="bg-gradient-to-b from-gray-50 to-gray-100 w-1/4">
+            <div className="bg-gradient-to-b from-slate-100 to-slate-200 w-1/4 border-r border-slate-300">
                 <Logo />
-                {Object.keys(onlinePeopleExcludingOurUser).includes(BOT_ID) ? (
-                    <Contact
-                        key={BOT_ID}
-                        online={true}
-                        id={BOT_ID}
-                        username={BOT_USERNAME}
-                        setSelectedUser={setSelectedUser}
-                        selected={BOT_ID === selectedUser}
-                    />
-                ) : (
-                    <Contact
-                        key={BOT_ID}
-                        online={false}
-                        id={BOT_ID}
-                        username={BOT_USERNAME}
-                        setSelectedUser={setSelectedUser}
-                        selected={BOT_ID === selectedUser}
-                    />
-                )}
+                <Contact
+                    key={BOT_ID}
+                    online={Object.keys(onlinePeopleExcludingOurUser).includes(BOT_ID)}
+                    id={BOT_ID}
+                    username={BOT_USERNAME}
+                    setSelectedUser={setSelectedUser}
+                    selected={BOT_ID === selectedUser}
+                />
             </div>
-            <div className="flex flex-col bg-indigo-50 w-3/4 p-4">
+
+            <div className="flex flex-col bg-slate-50 w-3/4 p-4">
                 <div className="flex-grow">
                     {!selectedUser && (
                         <div className="flex flex-grow h-full items-center justify-center">
-                            <div className='text-gray-400 text-4xl'>&larr; Select a person from the sidebar</div>
+                            <div className='text-slate-400 text-4xl'>&larr; Select a person from the sidebar</div>
                         </div>
                     )}
                     {!!selectedUser && (
                         <div className="relative h-full">
-                            <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                                {messageWithoutDupes.map(message => (
-                                    <div className={(message.sender === id ? 'text-right' : 'text-left')} key={message.id}>
-                                        <div className={`rounded-sm inline-block px-4 py-2 my-2 text-md max-w-xs ${message.sender === id ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-900'}`}>
-                                            {message.text}
+                            <div
+                                className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2"
+                                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                            >
+                                {messageWithoutDupes.map((message) => (
+                                    <div
+                                        className={message.sender === id ? 'text-right' : 'text-left'}
+                                        key={message._id}
+                                    >
+                                        <div
+                                            className={`rounded-xl inline-block px-4 py-2 my-2 text-md max-w-xs ${
+                                                message.sender === id
+                                                    ? 'bg-teal-600 text-white'
+                                                    : 'bg-slate-200 text-slate-900'
+                                            } whitespace-pre-line`}
+                                        >
+                                            {message.type === 'flight' ? (
+                                                <FlightMessage text={message.text} />
+                                            ) : message.type === 'hotel' ? (
+                                                <HotelMessage text={message.text} />
+                                            ) : (
+                                                <div className="whitespace-pre-line">{message.text}</div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
-                                <div ref={divUnderMessages}></div> {/* Scroll target */}
+                                <div ref={divUnderMessages}></div>
                             </div>
                         </div>
                     )}
                 </div>
+
                 {!!selectedUser && (
                     <form className="flex gap-2 mt-4" onSubmit={sendMessage}>
-                        <input type="text"
-                               value={newMessageText}
-                               onChange={e => setNewMessageText(e.target.value)}
-                               className="bg-white flex-grow border border-gray-300 p-2 rounded-sm"
-                               placeholder="Type your message here" />
-                        <button type="submit" className="bg-indigo-600 p-2 text-white rounded-sm">
+                        <textarea
+                            value={newMessageText}
+                            onChange={e => setNewMessageText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    sendMessage(e);
+                                }
+                            }}
+                            className="bg-white flex-grow border border-slate-300 p-2 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            placeholder="Type your message here"
+                            rows={1}
+                        />
+                        <button type="submit" className="bg-teal-600 hover:bg-teal-700 p-2 text-white rounded-md transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                             </svg>
