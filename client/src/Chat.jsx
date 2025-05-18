@@ -123,35 +123,39 @@ export default function Chat() {
                     {/* Online Users */}
                     <div className="mt-3">
                         <div className="text-xs text-slate-500 font-medium px-2">Online</div>
-                        {Object.entries(onlinePeopleExcludingOurUser).map(([userId, username]) => (
-                            <Contact
-                                key={userId}
-                                id={userId}
-                                online={true}
-                                username={username}
-                                setSelectedUser={setSelectedUser}
-                                selected={userId === selectedUser}
-                            />
-                        ))}
+                        {Object.entries(onlinePeopleExcludingOurUser)
+                            .filter(([userId, username]) => !!username)
+                            .map(([userId, username]) => (
+                                <Contact
+                                    key={userId}
+                                    id={userId}
+                                    online={true}
+                                    username={username}
+                                    setSelectedUser={setSelectedUser}
+                                    selected={userId === selectedUser}
+                                />
+                            ))}
+
                     </div>
 
                     {/* Offline Users */}
                     <div className="mt-3">
                         <div className="text-xs text-slate-500 font-medium px-2">Offline</div>
-                        {Object.entries(offlinePeople).map(([userId, username]) => (
-                            <Contact
-                                key={userId}
-                                id={userId}
-                                online={false}
-                                username={username}
-                                setSelectedUser={setSelectedUser}
-                                selected={userId === selectedUser}
-                            />
-                        ))}
+                        {Object.entries(offlinePeople)
+                            .filter(([userId, username]) => !!username)
+                            .map(([userId, username]) => (
+                                <Contact
+                                    key={userId}
+                                    id={userId}
+                                    online={false}
+                                    username={username}
+                                    setSelectedUser={setSelectedUser}
+                                    selected={userId === selectedUser}
+                                />
+                            ))}
                     </div>
                 </div>
             </div>
-
             {/* Main Chat Window */}
             <div className="flex flex-col bg-slate-50 w-3/4 p-4">
                 <div className="flex-grow">
