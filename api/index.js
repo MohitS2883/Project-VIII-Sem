@@ -10,25 +10,11 @@ import * as ws from 'ws';
 import Message from "./models/Message.js";
 
 const app = express();
-const allowedOrigins = [
-  'http://localhost:5173', // for local dev frontend
-  'https://project-viii-sem.vercel.app' // your deployed frontend
-];
-
 app.use(cors({
-  origin: function(origin, callback) {
-    // allow requests with no origin (like curl or Postman)
-    if(!origin) return callback(null, true);
-
-    if(allowedOrigins.indexOf(origin) === -1){
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
+      origin: 'http://localhost:5173',
+      credentials: true
     }
-    return callback(null, true);
-  },
-  credentials: true // if you need cookies/auth
-}));
-
+));
 app.use(express.json());
 app.use(cookieParser())
 env.config();
@@ -52,7 +38,7 @@ function getUserDateFromRequest(req) {
     })
 }
 function isFlightMessage(text) {
-    return (text.includes('Departure:') && text.includes('Arrival:')) || (text.includes('Departure') && text.includes('arrival'));
+    return text.includes('flight options') || text.includes('flights');
 }
 
 function isHotelMessage(text) {

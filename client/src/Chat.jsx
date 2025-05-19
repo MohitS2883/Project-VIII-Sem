@@ -1,8 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import Avatar from "./Avatar.jsx";
 import Logo from "./Logo.jsx";
 import { UserContext } from "./UserContext.jsx";
 import { uniqBy } from "lodash";
 import axios from "axios";
+import FlightCard from "./components/FlightCard.jsx";
 import Contact from "./components/Contact.jsx";
 import FlightMessage from "./components/FlightCard.jsx";
 import HotelMessage from "./components/HotelMessage.jsx";
@@ -24,7 +26,7 @@ export default function Chat() {
     }, []);
 
     function connectToWebSocket() {
-        const ws = new WebSocket('wss://c8ad-2406-7400-104-8b07-3d3a-82f0-f0af-f617.ngrok-free.app/');
+        const ws = new WebSocket('ws://localhost:3000');
         setWs(ws);
         ws.addEventListener('message', handleMessage);
         ws.addEventListener('close', () => {
@@ -43,7 +45,7 @@ export default function Chat() {
 
     useEffect(() => {
         if (selectedUser) {
-            axios.get('https://c8ad-2406-7400-104-8b07-3d3a-82f0-f0af-f617.ngrok-free.app/messages/' + selectedUser).then(res => {
+            axios.get('/messages/' + selectedUser).then(res => {
                 setMessages(res.data);
             });
         }
@@ -82,7 +84,7 @@ export default function Chat() {
     }
 
     useEffect(() => {
-        axios.get('https://c8ad-2406-7400-104-8b07-3d3a-82f0-f0af-f617.ngrok-free.app/people').then(res => {
+        axios.get('/people').then(res => {
             const offlinePeopleArr = res.data
                 .filter(person => person._id !== id)
                 .filter(p => !Object.keys(onlinePeople).includes(p._id));
@@ -154,6 +156,9 @@ export default function Chat() {
                                 />
                             ))}
                     </div>
+                </div>
+                <div className="p-2 text-center">
+                    <button className="text-sm text-gray-800">logout</button>
                 </div>
             </div>
 

@@ -247,40 +247,60 @@ token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
 
 print("Generated token:", token)
 
+# Store conversation history per user
+conversation_history = {}  # key: sender ID, value: list of messages
+MAX_HISTORY = 10  # Limit for recent messages to keep
+
 def on_message(ws, message):
     print("Received:", message)
 
     try:
         data = json.loads(message)  # parse the JSON string
 
-        # Check if this message has a 'type' field
         has_type = "type" in data
 
-        # If it has sender, recipient, and text (a "chat" message)
+        # If it's a chat message
         if 'sender' in data and 'recipient' in data and 'text' in data:
-            # Use the text field as input content for your assistant
+            user_id = data["sender"]
+
+            # Initialize if not present
+            if user_id not in conversation_history:
+                conversation_history[user_id] = [SYSTEM_MSG]
+
+            # Append user's message
+            conversation_history[user_id].append(HumanMessage(content=data["text"]))
+
+            # Build input state
             initial_state = {
-                "messages": [
-                    SYSTEM_MSG,
-                    HumanMessage(content=data["text"])
-                ]
+                "messages": conversation_history[user_id]
             }
+
+            # Get response from assistant
             out = assistant.invoke(initial_state)
 
-            # Build the response, optionally include 'type' if present
+            # Append assistant's response to history
+            assistant_response = out["messages"][-1]
+            conversation_history[user_id].append(assistant_response)
+
+            # Optional: trim old messages but keep system message
+            if len(conversation_history[user_id]) > MAX_HISTORY:
+                system_msg = conversation_history[user_id][0]
+                conversation_history[user_id] = [system_msg] + conversation_history[user_id][-MAX_HISTORY:]
+
+            # Build reply
             response = {
                 "sender": USER_ID,
-                "recipient": data["sender"],
-                "text": out["messages"][-1].content,
+                "recipient": user_id,
+                "text": assistant_response.content,
                 "_id": "temp-id-" + str(time.time())
             }
             if has_type:
                 response["type"] = data["type"]
 
             ws.send(json.dumps(response))
-            print("Replied with message",response)
+            print("Replied with message", response)
+
         else:
-            # Handle other types of messages (like the initial online list)
             print("Message does not contain sender/recipient/text fields, ignoring or handling separately.")
 
     except Exception as e:
