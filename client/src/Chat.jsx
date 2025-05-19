@@ -24,7 +24,7 @@ export default function Chat() {
     }, []);
 
     function connectToWebSocket() {
-        const ws = new WebSocket('ws://localhost:3000');
+        const ws = new WebSocket('wss://c8ad-2406-7400-104-8b07-3d3a-82f0-f0af-f617.ngrok-free.app/');
         setWs(ws);
         ws.addEventListener('message', handleMessage);
         ws.addEventListener('close', () => {
@@ -43,7 +43,7 @@ export default function Chat() {
 
     useEffect(() => {
         if (selectedUser) {
-            axios.get('/messages/' + selectedUser).then(res => {
+            axios.get('https://c8ad-2406-7400-104-8b07-3d3a-82f0-f0af-f617.ngrok-free.app/messages/' + selectedUser).then(res => {
                 setMessages(res.data);
             });
         }
@@ -82,7 +82,7 @@ export default function Chat() {
     }
 
     useEffect(() => {
-        axios.get('/people').then(res => {
+        axios.get('https://c8ad-2406-7400-104-8b07-3d3a-82f0-f0af-f617.ngrok-free.app/people').then(res => {
             const offlinePeopleArr = res.data
                 .filter(person => person._id !== id)
                 .filter(p => !Object.keys(onlinePeople).includes(p._id));
