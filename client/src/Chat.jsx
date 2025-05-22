@@ -26,7 +26,7 @@ export default function Chat() {
     }, []);
 
     function connectToWebSocket() {
-        const ws = new WebSocket('wss://rnvpg-2406-7400-104-bbf7-c976-d3ae-6875-be27.a.free.pinggy.link');
+        const ws = new WebSocket('ws://localhost:3000');
         setWs(ws);
         ws.addEventListener('message', handleMessage);
         ws.addEventListener('close', () => {
@@ -45,7 +45,7 @@ export default function Chat() {
 
     useEffect(() => {
         if (selectedUser) {
-            axios.get('https://rnvpg-2406-7400-104-bbf7-c976-d3ae-6875-be27.a.free.pinggy.link/messages/' + selectedUser).then(res => {
+            axios.get('/messages/' + selectedUser).then(res => {
                 setMessages(res.data);
             });
         }
@@ -84,7 +84,7 @@ export default function Chat() {
     }
 
     useEffect(() => {
-        axios.get('https://rnvpg-2406-7400-104-bbf7-c976-d3ae-6875-be27.a.free.pinggy.link/people').then(res => {
+        axios.get('/people').then(res => {
             const offlinePeopleArr = res.data
                 .filter(person => person._id !== id)
                 .filter(p => !Object.keys(onlinePeople).includes(p._id));
