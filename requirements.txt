@@ -7,10 +7,28 @@ websocket-client
 PyJWT
 python-dotenv
 
-
 # IBM Watsonx SDKs
-langchain-ibm
+langchain-ibm==0.3
+ibm-watsonx-ai
 ibm-watson-machine-learning
 
-# Optional for performance (if used elsewhere)
+# LangChain community integration
+langchain
+langchain-community
+
+# Optional and helpful tools
 functools32 ; python_version < '3.2'
+cython
+numpy
+bs4
+wikipedia
+tiktoken
+chromadb
+
+# For web scraping or HTML parsing (if needed)
+html5lib
+lxml
+
+# For logging and performance measurement
+loguru
+tabulate

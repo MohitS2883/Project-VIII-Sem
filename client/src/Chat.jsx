@@ -1,13 +1,12 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import Avatar from "./Avatar.jsx";
 import Logo from "./Logo.jsx";
 import { UserContext } from "./UserContext.jsx";
 import { uniqBy } from "lodash";
 import axios from "axios";
-import FlightCard from "./components/FlightCard.jsx";
 import Contact from "./components/Contact.jsx";
 import FlightMessage from "./components/FlightCard.jsx";
 import HotelMessage from "./components/HotelMessage.jsx";
+import WeatherMessage from "./components/WeatherCard.jsx";
 
 export default function Chat() {
     const [ws, setWs] = useState(null);
@@ -19,7 +18,7 @@ export default function Chat() {
     const { username, id } = useContext(UserContext);
     const divUnderMessages = useRef(null);
     const BOT_ID = "60b8d295f7f6d632d8b53cd4";
-    const BOT_USERNAME = "python-bot";
+    const BOT_USERNAME = "travel-bot";
 
     useEffect(() => {
         connectToWebSocket();
@@ -158,7 +157,7 @@ export default function Chat() {
                     </div>
                 </div>
                 <div className="p-2 text-center">
-                    <button className="text-sm text-gray-800">logout</button>
+                    <button className="text-sm bg-blue-100 py-1 px-2 text-gray-800 border rounded-sm">logout</button>
                 </div>
             </div>
 
@@ -188,7 +187,9 @@ export default function Chat() {
                                                     : 'bg-slate-200 text-slate-900'
                                             } whitespace-pre-line`}
                                         >
-                                            {message.type === 'flight' ? (
+                                            {/\d+(\.\d+)?°C/.test(message.text) ?  (
+                                                <WeatherMessage text={message.text} />
+                                            ) : message.type === 'flight' ? (
                                                 <FlightMessage text={message.text} />
                                             ) : message.type === 'hotel' ? (
                                                 <HotelMessage text={message.text} />

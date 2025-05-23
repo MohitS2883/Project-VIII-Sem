@@ -6,7 +6,7 @@ export default function Contact({id,username,selected,setSelectedUser,online}) {
             <div key={id}
                  onClick={() => setSelectedUser(id)}
                  className={`flex items-center gap-2 border-b border-gray-200 cursor-pointer ${id === selected ? 'bg-indigo-100' : ''}`}>
-                {id === selected && (
+                {selected && (
                     <div className='w-1 bg-indigo-500 h-12 rounded-r-md'></div>
                 )}
                 <div className="flex gap-2 py-2 pl-4 items-center">

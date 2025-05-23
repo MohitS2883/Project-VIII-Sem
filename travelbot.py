@@ -235,7 +235,7 @@ JWT_SECRET = 'NOIDEAABRO'
 
 # User info (use the same userId and username that exist in your MongoDB)
 USER_ID = "60b8d295f7f6d632d8b53cd4"
-USERNAME = "python-bot"
+USERNAME = "travel-bot"
 
 # Generate JWT token (no expiration or custom options here)
 payload = {

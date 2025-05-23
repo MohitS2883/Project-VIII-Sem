@@ -158,7 +158,6 @@ def hotels_finder(
         return [{"error": str(e)}]
 
 
-
 TOOLS = {t.name: t for t in (flights_finder, hotels_finder , city_code)}
 llm_with_tools = llm.bind_tools(list(TOOLS.values()))
 
@@ -248,71 +247,45 @@ token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
 print("Generated token:", token)
 
 
-### ===== TEST HARNESS =====
+import csv
 
-TEST_QUERIES = [
-    {
-        "query": "Find flights from Bengaluru to Mumbai tomorrow.",
-        "expected_tools": ["city_code", "flights_finder"],
-        "expected_content_keywords": ["BLR", "BOM", "Flight details:"]
-    },
-    {
-        "query": "Book a hotel in Paris from 2025-06-10 to 2025-06-15 for 2 adults.",
-        "expected_tools": ["hotels_finder"],
-        "expected_content_keywords": ["Paris", "hotel", "2025-06-10"]
-    },
-    {
-        "query": "What is the airport code for New York?",
-        "expected_tools": ["city_code"],
-        "expected_content_keywords": ["JFK", "airport code"]
-    },
-]
+def load_test_cases_from_csv(filepath: str) -> List[Dict[str, Any]]:
+    test_cases = []
+    with open(filepath, mode="r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            expected_tools = [tool.strip() for tool in row["expected_tools"].split(",")]
+            test_cases.append({
+                "query": row["query"],
+                "expected_tools": expected_tools,
+                "expected_content_keywords": []
+            })
+    return test_cases
 
-def test_travel_assistant():
-    for idx, test_case in enumerate(TEST_QUERIES, 1):
-        print(f"\nTest case #{idx}: {test_case['query']}")
 
-        initial_state = {
-            "messages": [
-                SYSTEM_MSG,
-                HumanMessage(content=test_case["query"])
-            ]
-        }
+def test_travel_assistant_from_csv(filepath: str):
+    test_cases = load_test_cases_from_csv(filepath)
 
-        # Run assistant to get AI message with tool calls
+    for test_case in test_cases:
+        print(f"\nTesting query: {test_case['query']}")
+        initial_state = {"messages": [SYSTEM_MSG, HumanMessage(content=test_case["query"])]}
+
         result = assistant.invoke(initial_state)
         messages = result["messages"]
-        ai_message = messages[-1]
 
-        tools_called = [call["name"] for call in getattr(ai_message, "tool_calls", [])]
-        print(f"Tools called by AI: {tools_called}")
+        # Find AI messages
+        ai_messages = [m for m in messages if isinstance(m, AIMessage)]
+        ai_message_with_tools = ai_messages[-2] if len(ai_messages) >= 2 else ai_messages[-1]
 
-        tools_match = all(tool in tools_called for tool in test_case["expected_tools"])
-        print(f"Expected tools called? {tools_match}")
+        tools_called = [call["name"] for call in getattr(ai_message_with_tools, "tool_calls", [])]
 
-        if tools_called:
-            new_messages = messages.copy()
-            for call in ai_message.tool_calls:
-                tool_fn = TOOLS.get(call["name"])
-                tool_result = tool_fn.invoke(call["args"]) if tool_fn else {"error": "unknown tool"}
-                new_messages.append(
-                    ToolMessage(
-                        name=call["name"],
-                        tool_call_id=call["id"],
-                        content=json.dumps(tool_result, ensure_ascii=False)
-                    )
-                )
+        print("Tools called by AI:", tools_called)
 
-            final_result = assistant.invoke({"messages": new_messages})
-            final_response = final_result["messages"][-1].content
-        else:
-            final_response = ai_message.content
+        for expected_tool in test_case["expected_tools"]:
+            assert expected_tool in tools_called, f"Expected tool '{expected_tool}' not called"
 
-        print(f"Assistant final response:\n{final_response}")
-
-        content_checks = [kw.lower() in final_response.lower() for kw in test_case["expected_content_keywords"]]
-        print(f"Response content keywords present? {all(content_checks)}")
+        print("Test passed: Correct tools were called.")
 
 
 if __name__ == "__main__":
-    test_travel_assistant()
+    test_travel_assistant_from_csv("tooltests.csv")
