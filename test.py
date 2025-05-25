@@ -248,44 +248,71 @@ print("Generated token:", token)
 
 
 import csv
+from typing import Any, Dict, List
+
 
 def load_test_cases_from_csv(filepath: str) -> List[Dict[str, Any]]:
     test_cases = []
     with open(filepath, mode="r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            expected_tools = [tool.strip() for tool in row["expected_tools"].split(",")]
+            expected_tools_raw = row["expected_tools"].strip().lower()
+            expected_tools = [] if expected_tools_raw == "none" else [
+                tool.strip() for tool in expected_tools_raw.split(",")
+            ]
             test_cases.append({
                 "query": row["query"],
-                "expected_tools": expected_tools,
-                "expected_content_keywords": []
+                "expected_tools": expected_tools
             })
     return test_cases
 
 
-def test_travel_assistant_from_csv(filepath: str):
+def test_travel_assistant_from_csv(filepath: str, output_filepath: str):
     test_cases = load_test_cases_from_csv(filepath)
 
-    for test_case in test_cases:
-        print(f"\nTesting query: {test_case['query']}")
-        initial_state = {"messages": [SYSTEM_MSG, HumanMessage(content=test_case["query"])]}
+    with open(output_filepath, mode="w", encoding="utf-8", newline="") as out_file:
+        fieldnames = ["query", "expected_tools", "tools_called", "status", "time_taken_sec"]
+        writer = csv.DictWriter(out_file, fieldnames=fieldnames)
+        writer.writeheader()
 
-        result = assistant.invoke(initial_state)
-        messages = result["messages"]
+        for test_case in test_cases:
+            query = test_case['query']
+            expected_tools = test_case['expected_tools']
+            print(f"\nTesting query: {query}")
 
-        # Find AI messages
-        ai_messages = [m for m in messages if isinstance(m, AIMessage)]
-        ai_message_with_tools = ai_messages[-2] if len(ai_messages) >= 2 else ai_messages[-1]
+            initial_state = {
+                "messages": [SYSTEM_MSG, HumanMessage(content=query)]
+            }
 
-        tools_called = [call["name"] for call in getattr(ai_message_with_tools, "tool_calls", [])]
+            start_time = time.time()  # Start timer
+            result = assistant.invoke(initial_state)
+            end_time = time.time()    # End timer
 
-        print("Tools called by AI:", tools_called)
+            time_taken = round(end_time - start_time, 3)
 
-        for expected_tool in test_case["expected_tools"]:
-            assert expected_tool in tools_called, f"Expected tool '{expected_tool}' not called"
+            messages = result["messages"]
 
-        print("Test passed: Correct tools were called.")
+            ai_messages = [m for m in messages if isinstance(m, AIMessage)]
+            ai_message_with_tools = (
+                ai_messages[-2] if len(ai_messages) >= 2 else ai_messages[-1]
+            )
+
+            tools_called = [call["name"] for call in getattr(ai_message_with_tools, "tool_calls", [])]
+
+            print("Tools called by AI:", tools_called)
+
+            status = "PASS" if set(tools_called) == set(expected_tools) else "FAIL"
+
+            writer.writerow({
+                "query": query,
+                "expected_tools": ", ".join(expected_tools) if expected_tools else "none",
+                "tools_called": ", ".join(tools_called) if tools_called else "none",
+                "status": status,
+                "time_taken_sec": time_taken
+            })
+
+            print(f"Test result: {status} | Time taken: {time_taken}s")
 
 
 if __name__ == "__main__":
-    test_travel_assistant_from_csv("tooltests.csv")
+    test_travel_assistant_from_csv("tooltests.csv", "test_results.csv")

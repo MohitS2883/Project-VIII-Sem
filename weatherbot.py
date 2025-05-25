@@ -211,7 +211,7 @@ JWT_SECRET = 'NOIDEAABRO'
 
 # User info (use the same userId and username that exist in your MongoDB)
 USER_ID = "665003a8c92f0a1c98d49f03"
-USERNAME = "weather-bot"
+USERNAME = "Weather Agent"
 
 # Generate JWT token (no expiration or custom options here)
 payload = {

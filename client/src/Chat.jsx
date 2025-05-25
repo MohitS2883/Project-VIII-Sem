@@ -116,7 +116,7 @@ export default function Chat() {
                         key={BOT_ID}
                         online={Object.keys(onlinePeopleExcludingOurUser).includes(BOT_ID)}
                         id={BOT_ID}
-                        username={BOT_USERNAME}
+                        username="Travel Agent"
                         setSelectedUser={setSelectedUser}
                         selected={BOT_ID === selectedUser}
                     />

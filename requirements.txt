@@ -32,3 +32,6 @@ lxml
 # For logging and performance measurement
 loguru
 tabulate
+
+bson
+pymongo

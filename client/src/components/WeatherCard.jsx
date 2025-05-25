@@ -3,7 +3,7 @@ export default function WeatherMessage({ text }) {
 
     const match = text.match(weatherRegex);
     if (!match) {
-        return <div className="text-red-500">Invalid weather format</div>;
+        return <div className="text-gray-950">{text}</div>;
     }
 
     const [, location, temperature, windSpeed, timeOfDay] = match;
