@@ -33,5 +33,4 @@ lxml
 loguru
 tabulate
 
-bson
 pymongo
