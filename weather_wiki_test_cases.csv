@@ -1,0 +1,67 @@
+query,expected_tool
+How is the weather in New York?,OpenMeteoTool
+Tell me the current temperature in Berlin.,OpenMeteoTool
+What's the weather like in Tokyo right now?,OpenMeteoTool
+Will it rain today in Paris?,OpenMeteoTool
+Check weather for Sydney.,OpenMeteoTool
+What are some tourist attractions in Rome?,WikipediaQueryRun
+Tell me about places to visit in Kyoto.,WikipediaQueryRun
+Which landmarks should I see in London?,WikipediaQueryRun
+What can I see in Istanbul?,WikipediaQueryRun
+Top attractions in Cairo?,WikipediaQueryRun
+What is your purpose?,none
+Who built you?,none
+Tell me a joke.,none
+What’s the capital of France?,none
+How tall is Mount Everest?,none
+I will be landing in New York today. I want to know what kind of clothes to carry.,OpenMeteoTool
+I plan to visit Berlin next week. What should I pack?,OpenMeteoTool
+query,expected_tool
+Is it snowing in Moscow?,OpenMeteoTool
+Do I need an umbrella in London today?,OpenMeteoTool
+What's the temperature in Dubai this evening?,OpenMeteoTool
+Is it sunny in Barcelona?,OpenMeteoTool
+Check tomorrow’s weather in Mumbai.,OpenMeteoTool
+How's the climate in Cape Town this week?,OpenMeteoTool
+Tell me if it's cold in Toronto.,OpenMeteoTool
+What’s the forecast for Chicago tomorrow?,OpenMeteoTool
+Will it be hot in Bangkok?,OpenMeteoTool
+How chilly is it in Reykjavik?,OpenMeteoTool
+Things to do in Amsterdam?,WikipediaQueryRun
+Must-visit places in Prague?,WikipediaQueryRun
+Tourist highlights of Mexico City?,WikipediaQueryRun
+What’s interesting to see in Athens?,WikipediaQueryRun
+Give me a travel guide for Seoul.,WikipediaQueryRun
+Best sightseeing spots in San Francisco?,WikipediaQueryRun
+What to explore in Lisbon?,WikipediaQueryRun
+Popular attractions in Budapest?,WikipediaQueryRun
+Historic sites in Jerusalem?,WikipediaQueryRun
+Who is the president of the United States?,none
+What’s the meaning of life?,none
+How do I bake a chocolate cake?,none
+Do you believe in ghosts?,none
+What's 23 times 17?,none
+What language do they speak in Brazil?,none
+Are aliens real?,none
+Can you dance?,none
+Who invented the light bulb?,none
+Give me a motivational quote.,none
+I'm traveling to Rome. Should I carry a jacket?,OpenMeteoTool
+Going to Tokyo next weekend — need a weather update.,OpenMeteoTool
+Visiting San Diego tomorrow. What's the weather like?,OpenMeteoTool
+Should I expect rain in Vancouver this week?,OpenMeteoTool
+Is it warm in Madrid right now?,OpenMeteoTool
+Weather outlook for Nairobi?,OpenMeteoTool
+Tell me about historical monuments in Delhi.,WikipediaQueryRun
+Famous museums in Paris?,WikipediaQueryRun
+What are the must-see spots in Vienna?,WikipediaQueryRun
+What can I explore in Zurich?,WikipediaQueryRun
+Are you sentient?,none
+Can you help me with my homework?,none
+What do you think of humans?,none
+What's your name?,none
+Do you have emotions?,none
+Where were you made?,none
+How do I get over a breakup?,none
+What is your favorite color?,none
+Are you smarter than a human?,none

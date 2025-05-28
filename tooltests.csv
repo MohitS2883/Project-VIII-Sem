@@ -1,130 +1,149 @@
 query,expected_tools
-"Find flights from Bengaluru to Mumbai tomorrow.","flights_finder"
-"Book a hotel in Paris from 2025-06-10 to 2025-06-15 for 2 adults.","hotels_finder"
-"What is the airport code for New York?","city_code"
-"Show me flights from JFK to LAX on 2025-07-01.","flights_finder"
-"I need a hotel in Tokyo from 2025-08-15 to 2025-08-20.","hotels_finder"
-"Find flights from Delhi to Chennai on 2025-09-10 for 1 adult.","flights_finder"
-"What's the airport code for London?","city_code"
-"Book a hotel in Dubai from 2025-10-01 to 2025-10-05.","hotels_finder"
-"Are there flights from SFO to SEA tomorrow?","flights_finder"
-"Find me hotels in New York City from 2025-11-15 to 2025-11-20 for 3 rooms.","hotels_finder"
-"Get the airport code for Sydney.","city_code"
-"Flights from Mumbai to Goa next Friday.","flights_finder"
-"Book a hotel in San Francisco from 2025-12-01 to 2025-12-07.","hotels_finder"
-"Airport code for Toronto?","city_code"
-"Looking for flights from Boston to Miami tomorrow.","flights_finder"
-"Hotels in Rome from 2025-06-05 to 2025-06-10 for 2 adults.","hotels_finder"
-"What's the airport code for Chicago?","city_code"
-"Find flights from Singapore to Kuala Lumpur for next Monday.","flights_finder"
-"Reserve a hotel in Amsterdam from 2025-07-20 to 2025-07-25.","hotels_finder"
-"Airport code for Berlin?","city_code"
-"Book flights from Los Angeles to San Diego on 2025-09-15.","flights_finder"
-"Hotel booking in Barcelona from 2025-10-10 to 2025-10-15 for 1 room.","hotels_finder"
-"What's the airport code for Paris?","city_code"
-"Find flights from New Delhi to Jaipur tomorrow.","flights_finder"
-"Book a hotel in Venice for 3 nights starting 2025-08-01.","hotels_finder"
-"Airport code for Madrid?","city_code"
-"Find flights from Chicago to New York City on 2025-07-12.","flights_finder"
-"Need hotels in Budapest from 2025-09-05 to 2025-09-10.","hotels_finder"
-"What's the airport code for Moscow?","city_code"
-"Book flights from Sydney to Melbourne on 2025-08-20.","flights_finder"
-"Reserve a hotel in Prague from 2025-10-01 to 2025-10-06.","hotels_finder"
-"Airport code for Dubai?","city_code"
-"Looking for flights from Miami to Orlando next Tuesday.","flights_finder"
-"Hotel stay in Lisbon from 2025-11-10 to 2025-11-15 for 2 adults.","hotels_finder"
-"What's the airport code for Toronto?","city_code"
-"Find flights from Brussels to Amsterdam tomorrow.","flights_finder"
-"Book a hotel in Vienna from 2025-12-05 to 2025-12-10.","hotels_finder"
-"Airport code for Istanbul?","city_code"
-"Find flights from Los Angeles to Las Vegas on 2025-07-22.","flights_finder"
-"Hotel in Copenhagen from 2025-08-15 to 2025-08-20 for 1 room.","hotels_finder"
-"What's the airport code for Auckland?","city_code"
-"Flights from Hong Kong to Bangkok tomorrow.","flights_finder"
-"Reserve a hotel in Zurich from 2025-09-15 to 2025-09-20.","hotels_finder"
-"Airport code for Buenos Aires?","city_code"
-"Book flights from Kuala Lumpur to Singapore on 2025-10-18.","flights_finder"
-"Hotel booking in Seoul from 2025-11-01 to 2025-11-06 for 3 adults.","hotels_finder"
-"What's the airport code for Johannesburg?","city_code"
-"Find flights from Toronto to Vancouver tomorrow.","flights_finder"
-"Book a hotel in Stockholm from 2025-12-10 to 2025-12-15.","hotels_finder"
-"Airport code for Cairo?","city_code"
-"Find flights from New York to Boston next Monday.","flights_finder"
-"Hotels in Helsinki from 2025-07-01 to 2025-07-06 for 2 rooms.","hotels_finder"
-"What's the airport code for Miami?","city_code"
-"Book flights from Mexico City to Cancun on 2025-08-10.","flights_finder"
-"Hotel stay in Montreal from 2025-09-05 to 2025-09-10.","hotels_finder"
-"Airport code for Sao Paulo?","city_code"
-"Find flights from Delhi to Bangalore tomorrow.","flights_finder"
-"Reserve a hotel in New Orleans from 2025-10-12 to 2025-10-17.","hotels_finder"
-"What's the airport code for Berlin?","city_code"
-"Book flights from Chicago to Denver on 2025-11-20.","flights_finder"
-"Hotels in Athens from 2025-12-01 to 2025-12-06 for 1 adult.","hotels_finder"
-"Airport code for Manila?","city_code"
-"Find flights from San Francisco to Portland tomorrow.","flights_finder"
-"Hotel booking in Dubai from 2025-07-15 to 2025-07-20.","hotels_finder"
-"What's the airport code for Brussels?","city_code"
-"Find flights from Amsterdam to Berlin next Friday.","flights_finder"
-"Book a hotel in Nice from 2025-08-10 to 2025-08-15.","hotels_finder"
-"Airport code for Helsinki?","city_code"
-"Flights from Mumbai to Pune tomorrow.","flights_finder"
-"Hotel stay in Glasgow from 2025-09-05 to 2025-09-10 for 2 adults.","hotels_finder"
-"What's the airport code for Oslo?","city_code"
-"Find flights from Cairo to Alexandria on 2025-10-01.","flights_finder"
-"Reserve a hotel in Edinburgh from 2025-11-15 to 2025-11-20.","hotels_finder"
-"Airport code for Venice?","city_code"
-"Book flights from Miami to New Orleans on 2025-12-05.","flights_finder"
-"Hotels in Kuala Lumpur from 2025-07-01 to 2025-07-06 for 1 room.","hotels_finder"
-"What's the airport code for Auckland?","city_code"
-"Find flights from Jakarta to Bali tomorrow.","flights_finder"
-"Book a hotel in Melbourne from 2025-08-10 to 2025-08-15 for 2 adults.","hotels_finder"
-"Airport code for Dublin?","city_code"
-"Find flights from Paris to Nice on 2025-09-12.","flights_finder"
-"Reserve a hotel in Brussels from 2025-10-01 to 2025-10-06.","hotels_finder"
-"What's the airport code for Montreal?","city_code"
-"Book flights from Stockholm to Copenhagen tomorrow.","flights_finder"
-"Hotels in Reykjavik from 2025-11-15 to 2025-11-20 for 3 rooms.","hotels_finder"
-"What's the airport code for Lisbon?","city_code"
-"Find flights from Rome to Milan next Tuesday.","flights_finder"
-"Book a hotel in Florence from 2025-12-01 to 2025-12-06.","hotels_finder"
-"Airport code for Oslo?","city_code"
-"Find flights from New York to Toronto tomorrow.","flights_finder"
-"Hotel stay in Vancouver from 2025-07-10 to 2025-07-15 for 2 adults.","hotels_finder"
-"What's the airport code for Zurich?","city_code"
-"Find flights from Delhi to Kolkata on 2025-08-05.","flights_finder"
-"Book a hotel in Goa from 2025-09-01 to 2025-09-06.","hotels_finder"
-"Airport code for Johannesburg?","city_code"
-"Flights from Seattle to San Diego tomorrow.","flights_finder"
-"Reserve a hotel in Las Vegas from 2025-10-10 to 2025-10-15.","hotels_finder"
-"What's the airport code for Munich?","city_code"
-"Find flights from Beijing to Shanghai next Monday.","flights_finder"
-"Hotels in Taipei from 2025-11-01 to 2025-11-06 for 1 room.","hotels_finder"
-"What's the airport code for Stockholm?","city_code"
-"Book flights from Delhi to Hyderabad tomorrow.","flights_finder"
-"Hotel booking in Bangkok from 2025-07-15 to 2025-07-20 for 2 adults.","hotels_finder"
-"Airport code for Auckland?","city_code"
-"Find flights from Los Angeles to San Jose on 2025-08-12.","flights_finder"
-"Reserve a hotel in New York from 2025-09-15 to 2025-09-20.","hotels_finder"
-"What's the airport code for Barcelona?","city_code"
-"Find flights from Chicago to Houston tomorrow.","flights_finder"
-"Book a hotel in Mexico City from 2025-10-01 to 2025-10-06.","hotels_finder"
-"Airport code for San Francisco?","city_code"
-"Find flights from Mumbai to Delhi next Friday.","flights_finder"
-"Hotels in Los Angeles from 2025-11-05 to 2025-11-10 for 1 adult.","hotels_finder"
-"What's the airport code for New Delhi?","city_code"
-"Book flights from Singapore to Bangkok tomorrow.","flights_finder"
-"Hotel stay in Kuala Lumpur from 2025-12-10 to 2025-12-15.","hotels_finder"
-"Airport code for Jakarta?","city_code"
-"Find flights from Toronto to Montreal on 2025-07-20.","flights_finder"
-"Reserve a hotel in Boston from 2025-08-01 to 2025-08-06.","hotels_finder"
-"What's the airport code for Venice?","city_code"
-"Hello, how are you today?","none"
-"Tell me a joke.","none"
-"What is the capital of France?","none"
-"Can you recommend a good movie?","none"
-"What's the weather like today?","none"
-"Who won the soccer game last night?","none"
-"How tall is the Eiffel Tower?","none"
-"Explain quantum physics in simple terms.","none"
-"What's your favorite food?","none"
-"Do you like music?","none"
+Find flights from Bengaluru to Mumbai tomorrow.,flights_finder
+Book a hotel in Paris from 2025-06-10 to 2025-06-15 for 2 adults.,hotels_finder
+What is the airport code for New York?,city_code
+Show me flights from JFK to LAX on 2025-07-01.,flights_finder
+I need a hotel in Tokyo from 2025-08-15 to 2025-08-20.,hotels_finder
+Find flights from Delhi to Chennai on 2025-09-10 for 1 adult.,flights_finder
+What's the airport code for London?,city_code
+Book a hotel in Dubai from 2025-10-01 to 2025-10-05.,hotels_finder
+Are there flights from SFO to SEA tomorrow?,flights_finder
+Find me hotels in New York City from 2025-11-15 to 2025-11-20 for 3 rooms.,hotels_finder
+Get the airport code for Sydney.,city_code
+Flights from Mumbai to Goa next Friday.,flights_finder
+Book a hotel in San Francisco from 2025-12-01 to 2025-12-07.,hotels_finder
+Airport code for Toronto?,city_code
+Looking for flights from Boston to Miami tomorrow.,flights_finder
+Hotels in Rome from 2025-06-05 to 2025-06-10 for 2 adults.,hotels_finder
+What's the airport code for Chicago?,city_code
+Find flights from Singapore to Kuala Lumpur for next Monday.,flights_finder
+Reserve a hotel in Amsterdam from 2025-07-20 to 2025-07-25.,hotels_finder
+Airport code for Berlin?,city_code
+Book flights from Los Angeles to San Diego on 2025-09-15.,flights_finder
+Hotel booking in Barcelona from 2025-10-10 to 2025-10-15 for 1 room.,hotels_finder
+What's the airport code for Paris?,city_code
+Find flights from New Delhi to Jaipur tomorrow.,flights_finder
+Book a hotel in Venice for 3 nights starting 2025-08-01.,hotels_finder
+Airport code for Madrid?,city_code
+Find flights from Chicago to New York City on 2025-07-12.,flights_finder
+Need hotels in Budapest from 2025-09-05 to 2025-09-10.,hotels_finder
+What's the airport code for Moscow?,city_code
+Book flights from Sydney to Melbourne on 2025-08-20.,flights_finder
+Reserve a hotel in Prague from 2025-10-01 to 2025-10-06.,hotels_finder
+Airport code for Dubai?,city_code
+Looking for flights from Miami to Orlando next Tuesday.,flights_finder
+Hotel stay in Lisbon from 2025-11-10 to 2025-11-15 for 2 adults.,hotels_finder
+What's the airport code for Toronto?,city_code
+Find flights from Brussels to Amsterdam tomorrow.,flights_finder
+Book a hotel in Vienna from 2025-12-05 to 2025-12-10.,hotels_finder
+Airport code for Istanbul?,city_code
+Find flights from Los Angeles to Las Vegas on 2025-07-22.,flights_finder
+Hotel in Copenhagen from 2025-08-15 to 2025-08-20 for 1 room.,hotels_finder
+What's the airport code for Auckland?,city_code
+Flights from Hong Kong to Bangkok tomorrow.,flights_finder
+Reserve a hotel in Zurich from 2025-09-15 to 2025-09-20.,hotels_finder
+Airport code for Buenos Aires?,city_code
+Book flights from Kuala Lumpur to Singapore on 2025-10-18.,flights_finder
+Hotel booking in Seoul from 2025-11-01 to 2025-11-06 for 3 adults.,hotels_finder
+What's the airport code for Johannesburg?,city_code
+Find flights from Toronto to Vancouver tomorrow.,flights_finder
+Book a hotel in Stockholm from 2025-12-10 to 2025-12-15.,hotels_finder
+Airport code for Cairo?,city_code
+Find flights from New York to Boston next Monday.,flights_finder
+Hotels in Helsinki from 2025-07-01 to 2025-07-06 for 2 rooms.,hotels_finder
+What's the airport code for Miami?,city_code
+Book flights from Mexico City to Cancun on 2025-08-10.,flights_finder
+Hotel stay in Montreal from 2025-09-05 to 2025-09-10.,hotels_finder
+Airport code for Sao Paulo?,city_code
+Find flights from Delhi to Bangalore tomorrow.,flights_finder
+Reserve a hotel in New Orleans from 2025-10-12 to 2025-10-17.,hotels_finder
+What's the airport code for Berlin?,city_code
+Book flights from Chicago to Denver on 2025-11-20.,flights_finder
+Hotels in Athens from 2025-12-01 to 2025-12-06 for 1 adult.,hotels_finder
+Airport code for Manila?,city_code
+Find flights from San Francisco to Portland tomorrow.,flights_finder
+Hotel booking in Dubai from 2025-07-15 to 2025-07-20.,hotels_finder
+What's the airport code for Brussels?,city_code
+Find flights from Amsterdam to Berlin next Friday.,flights_finder
+Book a hotel in Nice from 2025-08-10 to 2025-08-15.,hotels_finder
+Airport code for Helsinki?,city_code
+Flights from Mumbai to Pune tomorrow.,flights_finder
+Hotel stay in Glasgow from 2025-09-05 to 2025-09-10 for 2 adults.,hotels_finder
+What's the airport code for Oslo?,city_code
+Find flights from Cairo to Alexandria on 2025-10-01.,flights_finder
+Reserve a hotel in Edinburgh from 2025-11-15 to 2025-11-20.,hotels_finder
+Airport code for Venice?,city_code
+Book flights from Miami to New Orleans on 2025-12-05.,flights_finder
+Hotels in Kuala Lumpur from 2025-07-01 to 2025-07-06 for 1 room.,hotels_finder
+What's the airport code for Auckland?,city_code
+Find flights from Jakarta to Bali tomorrow.,flights_finder
+Book a hotel in Melbourne from 2025-08-10 to 2025-08-15 for 2 adults.,hotels_finder
+Airport code for Dublin?,city_code
+Find flights from Paris to Nice on 2025-09-12.,flights_finder
+Reserve a hotel in Brussels from 2025-10-01 to 2025-10-06.,hotels_finder
+What's the airport code for Montreal?,city_code
+Book flights from Stockholm to Copenhagen tomorrow.,flights_finder
+Hotels in Reykjavik from 2025-11-15 to 2025-11-20 for 3 rooms.,hotels_finder
+What's the airport code for Lisbon?,city_code
+Find flights from Rome to Milan next Tuesday.,flights_finder
+Book a hotel in Florence from 2025-12-01 to 2025-12-06.,hotels_finder
+Airport code for Oslo?,city_code
+Find flights from New York to Toronto tomorrow.,flights_finder
+Hotel stay in Vancouver from 2025-07-10 to 2025-07-15 for 2 adults.,hotels_finder
+What's the airport code for Zurich?,city_code
+Find flights from Delhi to Kolkata on 2025-08-05.,flights_finder
+Book a hotel in Goa from 2025-09-01 to 2025-09-06.,hotels_finder
+Airport code for Johannesburg?,city_code
+Flights from Seattle to San Diego tomorrow.,flights_finder
+Reserve a hotel in Las Vegas from 2025-10-10 to 2025-10-15.,hotels_finder
+What's the airport code for Munich?,city_code
+Find flights from Beijing to Shanghai next Monday.,flights_finder
+Hotels in Taipei from 2025-11-01 to 2025-11-06 for 1 room.,hotels_finder
+What's the airport code for Stockholm?,city_code
+Book flights from Delhi to Hyderabad tomorrow.,flights_finder
+Hotel booking in Bangkok from 2025-07-15 to 2025-07-20 for 2 adults.,hotels_finder
+Airport code for Auckland?,city_code
+Find flights from Los Angeles to San Jose on 2025-08-12.,flights_finder
+Reserve a hotel in New York from 2025-09-15 to 2025-09-20.,hotels_finder
+What's the airport code for Barcelona?,city_code
+Find flights from Chicago to Houston tomorrow.,flights_finder
+Book a hotel in Mexico City from 2025-10-01 to 2025-10-06.,hotels_finder
+Airport code for San Francisco?,city_code
+Find flights from Mumbai to Delhi next Friday.,flights_finder
+Hotels in Los Angeles from 2025-11-05 to 2025-11-10 for 1 adult.,hotels_finder
+What's the airport code for New Delhi?,city_code
+Book flights from Singapore to Bangkok tomorrow.,flights_finder
+Hotel stay in Kuala Lumpur from 2025-12-10 to 2025-12-15.,hotels_finder
+Airport code for Jakarta?,city_code
+Find flights from Toronto to Montreal on 2025-07-20.,flights_finder
+Reserve a hotel in Boston from 2025-08-01 to 2025-08-06.,hotels_finder
+What's the airport code for Venice?,city_code
+"Hello, how are you today?",none
+Tell me a joke.,none
+What is the capital of France?,none
+Can you recommend a good movie?,none
+What's the weather like today?,none
+Who won the soccer game last night?,none
+How tall is the Eiffel Tower?,none
+Explain quantum physics in simple terms.,none
+What's your favorite food?,none
+Do you like music?,none
+[user_id:60b8d295f7f6d632d8b53cd4] Book a flight from Delhi to Bangalore on 2025-07-10 for 2 people with Air India flight AI302.,create_flight_booking
+[user_id:60b8d295f7f6d632d8b53cd4] I want to book a flight from Mumbai to Goa on 2025-08-05. Use Indigo airline.,create_flight_booking
+[user_id:60b8d295f7f6d632d8b53cd4] Can you confirm a flight from Chennai to Kolkata for next Monday?,create_flight_booking
+[user_id:60b8d295f7f6d632d8b53cd4] Book Air Asia flight QZ123 from Kuala Lumpur to Bali on 2025-09-15.,create_flight_booking
+[user_id:60b8d295f7f6d632d8b53cd4] Show me my past flight bookings.,get_user_flight_bookings
+[user_id:60b8d295f7f6d632d8b53cd4] Retrieve all bookings I have made.,get_user_flight_bookings
+[user_id:60b8d295f7f6d632d8b53cd4] What are my current flight reservations?,get_user_flight_bookings
+[user_id:60b8d295f7f6d632d8b53cd4] Do I have any flights booked?,get_user_flight_bookings
+[user_id:60b8d295f7f6d632d8b53cd4] Book hotel in Bali from 2025-10-01 to 2025-10-06.,hotels_finder
+[user_id:60b8d295f7f6d632d8b53cd4] Find me a hotel in Zurich for 2 adults from 2025-11-10 to 2025-11-15.,hotels_finder
+[user_id:60b8d295f7f6d632d8b53cd4] What is the airport code for Bangalore?,city_code
+[user_id:60b8d295f7f6d632d8b53cd4] Give me the code for San Francisco.,city_code
+[user_id:60b8d295f7f6d632d8b53cd4] What's your favorite travel destination?,none
+[user_id:60b8d295f7f6d632d8b53cd4] Can you tell me a joke about airplanes?,none
+[user_id:60b8d295f7f6d632d8b53cd4] What is my user ID?,none
+[user_id:60b8d295f7f6d632d8b53cd4] Who are you?,none
+[user_id:60b8d295f7f6d632d8b53cd4] Explain how flights are priced.,none
+[user_id:60b8d295f7f6d632d8b53cd4] Book a hotel in Rome and a flight from Paris to Rome on 2025-08-10.,"hotels_finder,flights_finder"
+[user_id:60b8d295f7f6d632d8b53cd4] I want to travel from Mumbai to Delhi tomorrow and stay in Delhi for 3 days.,"flights_finder,hotels_finder"

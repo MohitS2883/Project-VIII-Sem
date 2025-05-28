@@ -24,7 +24,7 @@ from ibm_watson_machine_learning.metanames import GenTextParamsMetaNames as GenP
 from dotenv import load_dotenv
 import pymongo
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime,UTC
 load_dotenv()
 
 
@@ -168,8 +168,10 @@ def create_flight_booking(
     from_city: str,
     to_city: str,
     airline: str,
+    flightno: str,
     dateOfJourney: str,
     totalPrice: float,
+    numberOfTickets: Optional[int] = None,
 ) -> Dict[str, Any]:
     """
     Save a new flight booking into the MongoDB database.
@@ -177,6 +179,9 @@ def create_flight_booking(
     try:
         import pymongo
         from bson import ObjectId
+        journey_date = datetime.strptime(dateOfJourney, "%Y-%m-%d")
+        if journey_date.date() < datetime.now(UTC).date():
+            raise ValueError("Date of journey cannot be in the past.")
         client = pymongo.MongoClient(os.getenv("MONGO_URI"))
         db = client["test"]
 
@@ -186,14 +191,19 @@ def create_flight_booking(
             "from": from_city,
             "to": to_city,
             "airline": airline,
-            "dateOfJourney": datetime.strptime(dateOfJourney, "%Y-%m-%d"),
+            "flightno": flightno,
+            "dateOfJourney": journey_date,
             "totalPrice": totalPrice,
-            "createdAt": datetime.utcnow(),
+            "bookedAt": datetime.utcnow(),
         }
         result = db.flightbookings.insert_one(booking_doc)
         return {"message": "Booking confirmed", "bookingId": str(result.inserted_id)}
+    except ValueError as ve:
+        return {"error": f"Validation error: {str(ve)}"}
+    except EnvironmentError as ee:
+        return {"error": f"Configuration error: {str(ee)}"}
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": f"Unexpected error: {str(e)}"}
 
 @tool
 def hotels_finder(
@@ -236,8 +246,15 @@ SYSTEM_MSG = SystemMessage(
         "  then pass those codes to flights_finder.\n"
         "• If the user already provides 3‑letter codes, skip city_code.\n"
         "• For hotel queries use hotels_finder.\n"
-        "• For flight bookings, call the `get_user_flight_bookings` tool using the current user's userId.\n"
         "• If the user wants to book a flight, call the `create_flight_booking` tool with all booking details.\n"
+        "• Each user message includes the user ID in this format: [user_id:<user_id>] at the start of the message.\n"
+        "• If the user asks for their user ID, reply only with the user ID extracted from the message.\n"
+        "• Do not call any tools or fetch bookings in this case.\n"
+        "• Only call tools such as 'get_user_flight_bookings' if the user explicitly asks to see their flight bookings.\n"
+        "• In all other cases, respond directly based on the user's message and do not invoke tools unnecessarily.\n"
+        "• Always refer to the person interacting with you simply as \"user.\"\n"
+        "• Do not use their actual name, username, user ID, or any other personal identifier when speaking.\n"
+        "• Use only \"user\" in your responses and conversations.\n"
     )
 )
 
