@@ -1,0 +1,130 @@
+query,expected_tools,tools_called,status,time_taken_sec
+Find flights from Bengaluru to Mumbai tomorrow.,flights_finder,flights_finder,PASS,2.036
+Book a hotel in Paris from 2025-06-10 to 2025-06-15 for 2 adults.,hotels_finder,hotels_finder,PASS,2.492
+What is the airport code for New York?,city_code,city_code,PASS,1.784
+Show me flights from JFK to LAX on 2025-07-01.,flights_finder,flights_finder,PASS,2.125
+I need a hotel in Tokyo from 2025-08-15 to 2025-08-20.,hotels_finder,hotels_finder,PASS,3.296
+Find flights from Delhi to Chennai on 2025-09-10 for 1 adult.,flights_finder,flights_finder,PASS,2.258
+What's the airport code for London?,city_code,city_code,PASS,1.281
+Book a hotel in Dubai from 2025-10-01 to 2025-10-05.,hotels_finder,hotels_finder,PASS,2.576
+Are there flights from SFO to SEA tomorrow?,flights_finder,flights_finder,PASS,1.986
+Find me hotels in New York City from 2025-11-15 to 2025-11-20 for 3 rooms.,hotels_finder,hotels_finder,PASS,2.523
+Get the airport code for Sydney.,city_code,city_code,PASS,1.317
+Flights from Mumbai to Goa next Friday.,flights_finder,flights_finder,PASS,2.932
+Book a hotel in San Francisco from 2025-12-01 to 2025-12-07.,hotels_finder,hotels_finder,PASS,2.241
+Airport code for Toronto?,city_code,city_code,PASS,1.416
+Looking for flights from Boston to Miami tomorrow.,flights_finder,flights_finder,PASS,2.046
+Hotels in Rome from 2025-06-05 to 2025-06-10 for 2 adults.,hotels_finder,hotels_finder,PASS,3.397
+What's the airport code for Chicago?,city_code,city_code,PASS,2.082
+Find flights from Singapore to Kuala Lumpur for next Monday.,flights_finder,flights_finder,PASS,2.272
+Reserve a hotel in Amsterdam from 2025-07-20 to 2025-07-25.,hotels_finder,hotels_finder,PASS,2.676
+Airport code for Berlin?,city_code,city_code,PASS,1.307
+Book flights from Los Angeles to San Diego on 2025-09-15.,flights_finder,flights_finder,PASS,2.296
+Hotel booking in Barcelona from 2025-10-10 to 2025-10-15 for 1 room.,hotels_finder,hotels_finder,PASS,2.573
+What's the airport code for Paris?,city_code,city_code,PASS,1.31
+Find flights from New Delhi to Jaipur tomorrow.,flights_finder,flights_finder,PASS,2.078
+Book a hotel in Venice for 3 nights starting 2025-08-01.,hotels_finder,hotels_finder,PASS,2.377
+Airport code for Madrid?,city_code,city_code,PASS,1.275
+Find flights from Chicago to New York City on 2025-07-12.,flights_finder,flights_finder,PASS,2.267
+Need hotels in Budapest from 2025-09-05 to 2025-09-10.,hotels_finder,hotels_finder,PASS,2.233
+What's the airport code for Moscow?,city_code,city_code,PASS,1.336
+Book flights from Sydney to Melbourne on 2025-08-20.,flights_finder,flights_finder,PASS,2.128
+Reserve a hotel in Prague from 2025-10-01 to 2025-10-06.,hotels_finder,hotels_finder,PASS,5.236
+Airport code for Dubai?,city_code,city_code,PASS,1.356
+Looking for flights from Miami to Orlando next Tuesday.,flights_finder,flights_finder,PASS,2.979
+Hotel stay in Lisbon from 2025-11-10 to 2025-11-15 for 2 adults.,hotels_finder,hotels_finder,PASS,3.885
+What's the airport code for Toronto?,city_code,city_code,PASS,1.296
+Find flights from Brussels to Amsterdam tomorrow.,flights_finder,flights_finder,PASS,1.963
+Book a hotel in Vienna from 2025-12-05 to 2025-12-10.,hotels_finder,hotels_finder,PASS,2.332
+Airport code for Istanbul?,city_code,city_code,PASS,1.645
+Find flights from Los Angeles to Las Vegas on 2025-07-22.,flights_finder,flights_finder,PASS,2.944
+Hotel in Copenhagen from 2025-08-15 to 2025-08-20 for 1 room.,hotels_finder,hotels_finder,PASS,2.628
+What's the airport code for Auckland?,city_code,city_code,PASS,2.081
+Flights from Hong Kong to Bangkok tomorrow.,flights_finder,flights_finder,PASS,3.55
+Reserve a hotel in Zurich from 2025-09-15 to 2025-09-20.,hotels_finder,hotels_finder,PASS,2.292
+Airport code for Buenos Aires?,city_code,city_code,PASS,1.491
+Book flights from Kuala Lumpur to Singapore on 2025-10-18.,flights_finder,flights_finder,PASS,2.245
+Hotel booking in Seoul from 2025-11-01 to 2025-11-06 for 3 adults.,hotels_finder,hotels_finder,PASS,2.317
+What's the airport code for Johannesburg?,city_code,city_code,PASS,1.39
+Find flights from Toronto to Vancouver tomorrow.,flights_finder,flights_finder,PASS,2.832
+Book a hotel in Stockholm from 2025-12-10 to 2025-12-15.,hotels_finder,hotels_finder,PASS,2.309
+Airport code for Cairo?,city_code,city_code,PASS,1.304
+Find flights from New York to Boston next Monday.,flights_finder,flights_finder,PASS,2.049
+Hotels in Helsinki from 2025-07-01 to 2025-07-06 for 2 rooms.,hotels_finder,hotels_finder,PASS,2.997
+What's the airport code for Miami?,city_code,city_code,PASS,1.36
+Book flights from Mexico City to Cancun on 2025-08-10.,flights_finder,flights_finder,PASS,2.113
+Hotel stay in Montreal from 2025-09-05 to 2025-09-10.,hotels_finder,hotels_finder,PASS,2.744
+Airport code for Sao Paulo?,city_code,city_code,PASS,1.356
+Find flights from Delhi to Bangalore tomorrow.,flights_finder,flights_finder,PASS,1.991
+Reserve a hotel in New Orleans from 2025-10-12 to 2025-10-17.,hotels_finder,hotels_finder,PASS,2.318
+What's the airport code for Berlin?,city_code,city_code,PASS,1.293
+Book flights from Chicago to Denver on 2025-11-20.,flights_finder,flights_finder,PASS,2.134
+Hotels in Athens from 2025-12-01 to 2025-12-06 for 1 adult.,hotels_finder,hotels_finder,PASS,3.629
+Airport code for Manila?,city_code,city_code,PASS,2.115
+Find flights from San Francisco to Portland tomorrow.,flights_finder,flights_finder,PASS,2.03
+Hotel booking in Dubai from 2025-07-15 to 2025-07-20.,hotels_finder,hotels_finder,PASS,2.655
+What's the airport code for Brussels?,city_code,city_code,PASS,1.369
+Find flights from Amsterdam to Berlin next Friday.,flights_finder,flights_finder,PASS,2.113
+Book a hotel in Nice from 2025-08-10 to 2025-08-15.,hotels_finder,hotels_finder,PASS,2.385
+Airport code for Helsinki?,city_code,city_code,PASS,2.17
+Flights from Mumbai to Pune tomorrow.,flights_finder,flights_finder,PASS,2.001
+Hotel stay in Glasgow from 2025-09-05 to 2025-09-10 for 2 adults.,hotels_finder,hotels_finder,PASS,2.441
+What's the airport code for Oslo?,city_code,city_code,PASS,1.351
+Find flights from Cairo to Alexandria on 2025-10-01.,flights_finder,flights_finder,PASS,2.104
+Reserve a hotel in Edinburgh from 2025-11-15 to 2025-11-20.,hotels_finder,hotels_finder,PASS,2.273
+Airport code for Venice?,city_code,city_code,PASS,1.33
+Book flights from Miami to New Orleans on 2025-12-05.,flights_finder,flights_finder,PASS,3.736
+Hotels in Kuala Lumpur from 2025-07-01 to 2025-07-06 for 1 room.,hotels_finder,hotels_finder,PASS,3.18
+What's the airport code for Auckland?,city_code,city_code,PASS,1.419
+Find flights from Jakarta to Bali tomorrow.,flights_finder+,flights_finder,FAIL,2.445
+Book a hotel in Melbourne from 2025-08-10 to 2025-08-15 for 2 adults.,hotels_finder,hotels_finder,PASS,2.323
+Airport code for Dublin?,city_code,city_code,PASS,1.378
+Find flights from Paris to Nice on 2025-09-12.,flights_finder,flights_finder,PASS,2.246
+Reserve a hotel in Brussels from 2025-10-01 to 2025-10-06.,hotels_finder,hotels_finder,PASS,2.236
+What's the airport code for Montreal?,city_code,city_code,PASS,1.32
+Book flights from Stockholm to Copenhagen tomorrow.,flights_finder,flights_finder,PASS,2.035
+Hotels in Reykjavik from 2025-11-15 to 2025-11-20 for 3 rooms.,hotels_finder,hotels_finder,PASS,2.469
+What's the airport code for Lisbon?,city_code,city_code,PASS,1.357
+Find flights from Rome to Milan next Tuesday.,flights_finder,flights_finder,PASS,2.103
+Book a hotel in Florence from 2025-12-01 to 2025-12-06.,hotels_finder,hotels_finder,PASS,2.781
+Airport code for Oslo?,city_code,city_code,PASS,2.169
+Find flights from New York to Toronto tomorrow.,flights_finder,flights_finder,PASS,3.163
+Hotel stay in Vancouver from 2025-07-10 to 2025-07-15 for 2 adults.,hotels_finder,hotels_finder,PASS,3.867
+What's the airport code for Zurich?,city_code,city_code,PASS,1.457
+Find flights from Delhi to Kolkata on 2025-08-05.,flights_finder,flights_finder,PASS,2.103
+Book a hotel in Goa from 2025-09-01 to 2025-09-06.,hotels_finder,hotels_finder,PASS,3.192
+Airport code for Johannesburg?,city_code,city_code,PASS,1.497
+Flights from Seattle to San Diego tomorrow.,flights_finder,flights_finder,PASS,2.126
+Reserve a hotel in Las Vegas from 2025-10-10 to 2025-10-15.,hotels_finder,hotels_finder,PASS,2.419
+What's the airport code for Munich?,city_code,city_code,PASS,1.341
+Find flights from Beijing to Shanghai next Monday.,flights_finder,flights_finder,PASS,2.037
+Hotels in Taipei from 2025-11-01 to 2025-11-06 for 1 room.,hotels_finder,hotels_finder,PASS,3.748
+What's the airport code for Stockholm?,city_code,city_code,PASS,1.34
+Book flights from Delhi to Hyderabad tomorrow.,flights_finder,flights_finder,PASS,3.325
+Hotel booking in Bangkok from 2025-07-15 to 2025-07-20 for 2 adults.,hotels_finder,hotels_finder,PASS,3.917
+Airport code for Auckland?,city_code,city_code,PASS,1.358
+Find flights from Los Angeles to San Jose on 2025-08-12.,flights_finder,flights_finder,PASS,2.423
+Reserve a hotel in New York from 2025-09-15 to 2025-09-20.,hotels_finder,hotels_finder,PASS,2.354
+What's the airport code for Barcelona?,city_code,city_code,PASS,1.358
+Find flights from Chicago to Houston tomorrow.,flights_finder,flights_finder,PASS,2.125
+Book a hotel in Mexico City from 2025-10-01 to 2025-10-06.,hotels_finder,hotels_finder,PASS,2.49
+Airport code for San Francisco?,city_code,city_code,PASS,1.469
+Find flights from Mumbai to Delhi next Friday.,flights_finder,flights_finder,PASS,2.897
+Hotels in Los Angeles from 2025-11-05 to 2025-11-10 for 1 adult.,hotels_finder,hotels_finder,PASS,3.902
+What's the airport code for New Delhi?,city_code,city_code,PASS,1.357
+Book flights from Singapore to Bangkok tomorrow.,flights_finder,flights_finder,PASS,2.001
+Hotel stay in Kuala Lumpur from 2025-12-10 to 2025-12-15.,hotels_finder,hotels_finder,PASS,2.312
+Airport code for Jakarta?,city_code,city_code,PASS,1.319
+Find flights from Toronto to Montreal on 2025-07-20.,flights_finder,flights_finder,PASS,2.135
+Reserve a hotel in Boston from 2025-08-01 to 2025-08-06.,hotels_finder,hotels_finder,PASS,2.506
+What's the airport code for Venice?,city_code,city_code,PASS,1.35
+"Hello, how are you today?",none,none,PASS,0.858
+Tell me a joke.,none,none,PASS,1.704
+What is the capital of France?,none,none,PASS,0.536
+Can you recommend a good movie?,none,none,PASS,0.854
+What's the weather like today?,none,none,PASS,0.837
+Who won the soccer game last night?,none,none,PASS,0.851
+How tall is the Eiffel Tower?,none,none,PASS,1.013
+Explain quantum physics in simple terms.,none,none,PASS,1.247
+What's your favorite food?,none,none,PASS,0.688
+Do you like music?,none,none,PASS,1.074

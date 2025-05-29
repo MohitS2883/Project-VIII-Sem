@@ -1,0 +1,64 @@
+=== Basic Metrics ===
+Average Time Taken (sec): 25.08
+Average Response Relevance (word-based): 0.66
+Average Semantic Relevance (embedding-based): 0.68
+Pass: 113, Fail: 35, Pass/Fail Ratio: 3.23
+
+=== Per Tool Breakdown (Pass Rate) ===
+status                          FAIL   PASS
+expected_tools
+city_code                      0.000  1.000
+create_flight_booking          1.000  0.000
+flights_finder                 0.675  0.325
+flights_finder, hotels_finder  0.000  1.000
+get_user_flight_bookings       1.000  0.000
+hotels_finder                  0.000  1.000
+hotels_finder, flights_finder  0.000  1.000
+none                           0.000  1.000
+
+=== Avg Time per Tool ===
+expected_tools
+city_code                        16.160341
+create_flight_booking            12.631750
+flights_finder                   20.681375
+flights_finder, hotels_finder    35.909000
+get_user_flight_bookings          8.847000
+hotels_finder                    46.222833
+hotels_finder, flights_finder    55.802000
+none                              6.863800
+Name: time_taken_sec, dtype: float64
+
+=== Avg Relevance per Tool ===
+                               response_relevance  semantic_relevance
+expected_tools
+city_code                                0.824146            0.853439
+create_flight_booking                    0.387500            0.618293
+flights_finder                           0.406000            0.583621
+flights_finder, hotels_finder            0.620000            0.616248
+get_user_flight_bookings                 0.345000            0.659119
+hotels_finder                            0.884048            0.689609
+hotels_finder, flights_finder            0.810000            0.575766
+none                                     0.428667            0.518503
+
+=== Average Tool Precision/Recall/F1 ===
+Precision: 0.80
+Recall:    0.76
+F1 Score:  0.76
+
+=== Slowest Queries (Top 5) ===
+                                                 query  time_taken_sec
+24   Book a hotel in Venice for 3 nights starting 2...          96.207
+35   Find flights from Brussels to Amsterdam tomorrow.          80.934
+114  Hotel stay in Kuala Lumpur from 2025-12-10 to ...          79.078
+18   Reserve a hotel in Amsterdam from 2025-07-20 t...          78.147
+21   Hotel booking in Barcelona from 2025-10-10 to ...          67.064
+
+=== Lowest Semantic Relevance (Top 5 FAILs) ===
+                                                 query  semantic_relevance                                     final_response
+74   Book flights from Miami to New Orleans on 2025...            0.261985  Sorry, I couldn't find the 3-letter airport co...
+95         Flights from Seattle to San Diego tomorrow.            0.300391  I'm sorry, but I couldn't find the airport cod...
+32   Looking for flights from Miami to Orlando next...            0.336090  Sorry, I couldn't find the airport codes for t...
+23     Find flights from New Delhi to Jaipur tomorrow.            0.347248  Sorry, I couldn't find the airport codes for t...
+131  [user_id:60b8d295f7f6d632d8b53cd4] Can you con...            0.381183  I'm sorry, but I couldn't find the airport cod...
+
+% of responses with semantic relevance > 0.7: 50.68%

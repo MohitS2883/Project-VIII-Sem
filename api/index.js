@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import * as bcrypt from 'bcryptjs';
 import * as ws from 'ws';
 import Message from "./models/Message.js";
+import {FlightBooking} from "./models/FlightBooking.js";
 
 const app = express();
 app.use(cors({
@@ -130,6 +131,34 @@ app.get('/messages/:userId',async (req,res) => {
 app.get('/people',async(req,res) =>{
     const users = await User.find({},{'_id':1,username:1})
     res.json(users)
+})
+
+app.get('/bookings/:userId',async(req,res) => {
+    const userData = await getUserDateFromRequest(req)
+    const bookings = await FlightBooking.find(
+        {user: userData.userId},
+    )
+    res.json(bookings)
+})
+
+app.post('/bookings',async(req,res) => {
+    try {
+        const { user, name, from, to, airline, dateOfJourney, totalPrice } = req.body;
+        const newBooking = new FlightBooking({
+            user: user,
+            name: name,
+            from: from,
+            to: to,
+            airline: airline,
+            dateOfJourney: dateOfJourney,
+            totalPrice: totalPrice,
+        });
+        await newBooking.save();
+        res.status(200).json({ message: 'Booking confirmed' });
+    } catch (error) {
+        console.error('Error in booking:', error);
+        res.status(500).json({ error: 'An error occurred, please try again' });
+    }
 })
 
 const PORT = process.env.PORT || 3000;

@@ -29,7 +29,7 @@ credentials = {
 project_id = os.getenv("PROJECT_ID")
 
 llm = ChatWatsonx(
-    model_id="ibm/granite-3-2-8b-instruct",
+    model_id='meta-llama/llama-3-3-70b-instruct',
     url=credentials["url"],
     apikey=credentials["apikey"],
     project_id=project_id,
@@ -331,4 +331,4 @@ def test_travel_assistant_from_csv(filepath: str, output_filepath: str):
             print(f"Test result: {status} | Time taken: {time_taken}s | Relevance: {relevance_score}")
 
 if __name__ == "__main__":
-    test_travel_assistant_from_csv("tooltests.csv", "test_results_2.csv")
+    test_travel_assistant_from_csv("tooltests.csv", "test_results_llama.csv")
