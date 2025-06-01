@@ -1,0 +1,29 @@
+qwen3:8b
+expected_tools
+city_code                 0.917436            0.243927
+flights_finder            0.997750            0.447455
+hotels_finder             0.991282            0.636635
+none                      0.863750            0.503965
+
+=== Average Tool Precision/Recall/F1 ===
+Precision: 0.98
+Recall:    0.90
+F1 Score:  0.90
+
+=== Slowest Queries (Top 5) ===
+                                                 query  time_taken_sec
+13                           Airport code for Toronto?        2543.047
+88     Find flights from New York to Toronto tomorrow.         643.351
+25   Find flights from Chicago to New York City on ...         598.286
+97   Find flights from Beijing to Shanghai next Mon...         575.322
+115  Find flights from Toronto to Montreal on 2025-...         497.266
+
+=== Lowest Semantic Relevance (Top 5 FAILs) ===
+                                                 query  semantic_relevance                                     final_response
+97   Find flights from Beijing to Shanghai next Mon...            0.022039                                                PEK
+25   Find flights from Chicago to New York City on ...            0.049902                                                ORD
+115  Find flights from Toronto to Montreal on 2025-...            0.070596                                                YYZ
+88     Find flights from New York to Toronto tomorrow.            0.404523  <think> Okay, the user wants to find flights f...
+85       Find flights from Rome to Milan next Tuesday.            0.496664  <think> Okay, the user wants to find flights f...
+
+% of responses with semantic relevance > 0.7: 5.56%

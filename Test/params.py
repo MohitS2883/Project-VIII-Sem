@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the CSV
-df = pd.read_csv("test_results_mistral_enhanced.csv")
+df = pd.read_csv("test_results_ollama_gemma_enhanced.csv")
 
 # Normalize tools columns
 df["expected_tools"] = df["expected_tools"].fillna("none")
@@ -62,4 +62,4 @@ high_quality_ratio = (df["semantic_relevance"] > threshold).mean()
 print(f"\n% of responses with semantic relevance > {threshold}: {high_quality_ratio * 100:.2f}%")
 
 # Optional: Save enhanced data
-df.to_csv("enhanced_test_results_with_metrics_mistral.csv", index=False)
+df.to_csv("enhanced_test_results_with_metrics_ollama_gemma_enhanced.csv", index=False)

@@ -1,0 +1,66 @@
+PS C:\Users\svenk\Downloads\Education\VIII sem\Chat> python .\params.py
+gemma3:4b
+=== Basic Metrics ===
+Average Time Taken (sec): 15.98
+Average Response Relevance (word-based): 0.76
+Average Semantic Relevance (embedding-based): 0.44
+Pass: 123, Fail: 21, Pass/Fail Ratio: 5.86
+
+=== Per Tool Breakdown (Pass Rate) ===
+status                             FAIL      PASS
+expected_tools
+city_code                      0.102564  0.897436
+create_flight_booking          0.750000  0.250000
+flights_finder                 0.230769  0.769231
+flights_finder, hotels_finder  1.000000  0.000000
+get_user_flight_bookings       0.000000  1.000000
+hotels_finder                  0.000000  1.000000
+hotels_finder, flights_finder  1.000000  0.000000
+none                           0.200000  0.800000
+
+=== Avg Time per Tool ===
+expected_tools
+city_code                         8.001949
+create_flight_booking            19.027000
+flights_finder                   18.565795
+flights_finder, hotels_finder    16.913000
+get_user_flight_bookings         12.373000
+hotels_finder                    18.867195
+hotels_finder, flights_finder    23.270000
+none                             21.680600
+Name: time_taken_sec, dtype: float64
+
+=== Avg Relevance per Tool ===
+                               response_relevance  semantic_relevance
+expected_tools
+city_code                                0.802051            0.236891
+create_flight_booking                    0.530000            0.434348
+flights_finder                           0.902821            0.428053
+flights_finder, hotels_finder            0.440000            0.397087
+get_user_flight_bookings                 0.467500            0.510393
+hotels_finder                            0.739512            0.629529
+hotels_finder, flights_finder            0.810000            0.425295
+none                                     0.534000            0.437481
+
+=== Average Tool Precision/Recall/F1 ===
+Precision: 0.91
+Recall:    0.88
+F1 Score:  0.86
+
+=== Slowest Queries (Top 5) ===
+                                                 query  time_taken_sec
+141  [user_id:60b8d295f7f6d632d8b53cd4] Explain how...          91.300
+122           Explain quantum physics in simple terms.          79.632
+20   Book flights from Los Angeles to San Diego on ...          49.697
+128  [user_id:60b8d295f7f6d632d8b53cd4] Book Air As...          33.083
+97      Book flights from Delhi to Hyderabad tomorrow.          32.793
+
+=== Lowest Semantic Relevance (Top 5 FAILs) ===
+                                                 query  semantic_relevance                                     final_response
+124                                 Do you like music?           -0.061779  Error fetching flights: 400 Client Error: Bad ...
+20   Book flights from Los Angeles to San Diego on ...            0.155728  Error invoking tool create_flight_booking: cre...
+118                    Can you recommend a good movie?            0.183606              Unknown tool requested: movies_finder
+49   Book flights from Mexico City to Cancun on 202...            0.195148  Error invoking tool create_flight_booking: cre...
+25   Book flights from Sydney to Melbourne on 2025-...            0.203057  Error invoking tool create_flight_booking: cre...
+
+% of responses with semantic relevance > 0.7: 5.56%

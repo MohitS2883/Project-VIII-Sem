@@ -1,0 +1,60 @@
+PS C:\Users\svenk\Downloads\Education\VIII sem\Chat> python .\params.py
+"ibm/granite-3-2-8b-instruct"
+=== Basic Metrics ===
+Average Time Taken (sec): 12.13
+Average Response Relevance (word-based): 0.71
+Average Semantic Relevance (embedding-based): 0.67
+Pass: 124, Fail: 7, Pass/Fail Ratio: 17.71
+
+=== Per Tool Breakdown (Pass Rate) ===
+status                  FAIL   PASS
+expected_tools
+city_code              0.000  1.000
+create_flight_booking  1.000  0.000
+flights_finder         0.075  0.925
+hotels_finder          0.025  0.975
+none                   0.000  1.000
+
+=== Avg Time per Tool ===
+expected_tools
+city_code                 2.777487
+create_flight_booking    10.138000
+flights_finder           11.264125
+hotels_finder            24.759050
+none                      1.005000
+Name: time_taken_sec, dtype: float64
+
+=== Avg Relevance per Tool ===
+                       response_relevance  semantic_relevance
+expected_tools
+city_code                        0.786667            0.801597
+create_flight_booking            0.573333            0.655536
+flights_finder                   0.670750            0.576768
+hotels_finder                    0.768000            0.703615
+none                             0.396667            0.364954
+
+=== Average Tool Precision/Recall/F1 ===
+Precision: 0.96
+Recall:    0.98
+F1 Score:  0.97
+
+=== Slowest Queries (Top 5) ===
+                                                 query  time_taken_sec
+105  Reserve a hotel in New York from 2025-09-15 to...          85.149
+96   Reserve a hotel in Las Vegas from 2025-10-10 t...          68.365
+101     Book flights from Delhi to Hyderabad tomorrow.          60.830
+99   Hotels in Taipei from 2025-11-01 to 2025-11-06...          50.423
+104  Find flights from Los Angeles to San Jose on 2...          45.719
+
+=== Lowest Semantic Relevance (Top 5 FAILs) ===
+                                                 query  semantic_relevance                                     final_response
+130  [user_id:60b8d295f7f6d632d8b53cd4] Can you con...            0.595096  Apologies for the inconvenience, but it seems ...
+129  [user_id:60b8d295f7f6d632d8b53cd4] I want to b...            0.620482  I found several flight options for your trip f...
+41         Flights from Hong Kong to Bangkok tomorrow.            0.631239  Here are some flight options from Hong Kong (H...
+95         Flights from Seattle to San Diego tomorrow.            0.662903  Here are some flight options from Seattle (SEA...
+14   Looking for flights from Boston to Miami tomor...            0.663279  Here are some flight options from Boston (BOS)...
+
+% of responses with semantic relevance > 0.7: 52.67%
+
+
+Travel bot with "ibm/granite-3-2-8b-instruct"

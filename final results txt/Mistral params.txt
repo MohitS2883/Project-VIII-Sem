@@ -1,3 +1,4 @@
+mistralai/mistral-large
 === Basic Metrics ===
 Average Time Taken (sec): 25.08
 Average Response Relevance (word-based): 0.66
