@@ -16,10 +16,12 @@ export default function Chat() {
     const [selectedUser, setSelectedUser] = useState(null);
     const [newMessageText, setNewMessageText] = useState('');
     const [messages, setMessages] = useState([]);
-    const { username, id } = useContext(UserContext);
+    const { setId, id, userName, setLoggedInUserName } = useContext(UserContext);
     const divUnderMessages = useRef(null);
     const BOT_ID = "60b8d295f7f6d632d8b53cd4";
     const BOT_USERNAME = "travel-bot";
+
+    console.log(userName, id, BOT_USERNAME, BOT_ID)
 
     useEffect(() => {
         connectToWebSocket();
@@ -51,6 +53,12 @@ export default function Chat() {
         }
     }, [selectedUser]);
 
+    function logout() {
+        axios.post('/logout').then(() => {
+            setId(null)
+            setLoggedInUserName(null)
+        });
+    }
     function showOnlinePeople(peopleArray) {
         const people = {};
         peopleArray.forEach(({ userId, username }) => {
@@ -157,8 +165,21 @@ export default function Chat() {
                     {/*        ))}*/}
                     {/*</div>*/}
                 </div>
-                <div className="p-2 text-center">
-                    <button className="text-sm bg-blue-100 py-1 px-2 text-gray-800 border rounded-sm">logout</button>
+                <div className="p-4 flex items-center justify-between border-t border-slate-300 bg-slate-200">
+                    <div className="flex items-center space-x-2">
+                        <div className="bg-slate-100 p-2 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-gray-500">
+                                <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clipRule="evenodd" />
+                            </svg>
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">{userName}</span>
+                    </div>
+                    <button
+                        onClick={logout}
+                        className="text-sm px-3 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                    >
+                        Logout
+                    </button>
                 </div>
             </div>
 
