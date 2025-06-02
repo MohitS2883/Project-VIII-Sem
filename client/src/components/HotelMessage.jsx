@@ -3,75 +3,120 @@ function HotelMessage({ text }) {
 
     const lines = text
         .replace(/\\n/g, '\n')
-        .trim()
         .split('\n')
         .map(line => line.trim())
         .filter(Boolean);
 
-    const intro = lines[0];
+    if (lines.length === 0) return null;
+
     const hotelBlocks = [];
     let currentBlock = null;
 
-    for (let i = 1; i < lines.length; i++) {
-        const line = lines[i];
+    lines.forEach(line => {
+        // Format A: Hotel 1: Name
+        const formatA = line.match(/^Hotel\s+(\d+):\s*(.+)$/i);
 
-        // Detect new hotel block
-        const hotelMatch = line.match(/^Hotel\s+(\d+):\s+(.+?)\s+\((.+?)\)$/);
-        if (hotelMatch) {
+        // Format B: 1. **Hotel Name**
+        const formatB = line.match(/^(\d+)\.\s+\*\*(.+?)\*\*/);
+
+        if (formatA) {
             if (currentBlock) hotelBlocks.push(currentBlock);
             currentBlock = {
-                hotelNumber: hotelMatch[1],
-                name: hotelMatch[2],
-                type: hotelMatch[3],
+                hotelNumber: formatA[1],
+                name: formatA[2],
                 details: [],
-                images: [],
             };
-        } else if (line.startsWith('https://') || line.startsWith('- https://')) {
-            if (currentBlock) {
-                const urls = line.split(/\s+/).map(url => url.replace(/^-/, '').trim());
-                currentBlock.images.push(...urls);
-            }
+        } else if (formatB) {
+            if (currentBlock) hotelBlocks.push(currentBlock);
+            currentBlock = {
+                hotelNumber: formatB[1],
+                name: formatB[2],
+                details: [],
+            };
         } else if (currentBlock) {
             currentBlock.details.push(line);
         }
-    }
+    });
 
     if (currentBlock) hotelBlocks.push(currentBlock);
 
+    // Detect intro/outro
+    const headerLine = lines[0];
+    const hasIntro = !/^Hotel\s+\d+:|^\d+\.\s+\*\*/i.test(headerLine);
+    const intro = hasIntro ? headerLine : null;
+
+    const formatText = (text) => {
+        let html = text.replace(
+            /(https?:\/\/[^\s]+)/g,
+            url => `<a href="${url}" class="text-blue-600 underline" target="_blank" rel="noopener noreferrer">link</a>`
+        );
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+        return html;
+    };
+
     return (
         <div className="space-y-6 text-sm text-slate-700 w-full">
-            <p className="text-base font-medium text-slate-900 whitespace-pre-line">{intro}</p>
+            {intro && (
+                <p className="text-base font-medium text-slate-900 whitespace-pre-line">
+                    {intro}
+                </p>
+            )}
 
-            {hotelBlocks.map(({ hotelNumber, name, type, details, images }, idx) => (
-                <div
-                    key={idx}
-                    className="w-full border border-slate-300 rounded-xl p-4 shadow-sm bg-slate-100"
-                >
-                    <h3 className="font-semibold text-slate-900 text-lg mb-2">
-                        Hotel {hotelNumber}: {name}{' '}
-                        <span className="text-slate-500 text-sm">({type})</span>
-                    </h3>
+            {hotelBlocks.map(({ hotelNumber, name, details }, idx) => {
+                const listItems = [];
+                const paragraphs = [];
 
-                    <ul className="list-disc list-inside space-y-1 mb-3">
-                        {details.map((line, i) => (
-                            <li key={i}>{line}</li>
-                        ))}
-                    </ul>
+                details.forEach(line => {
+                    if (/^[-•]\s+/.test(line)) {
+                        listItems.push(line.replace(/^[-•]\s+/, ''));
+                    } else {
+                        if (listItems.length > 0) {
+                            paragraphs.push({ type: 'ul', content: [...listItems] });
+                            listItems.length = 0;
+                        }
+                        paragraphs.push({ type: 'p', content: line });
+                    }
+                });
 
-                    {images.length > 0 && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {images.map((url, i) => (
-                                <img
-                                    key={i}
-                                    src={url}
-                                    alt={`Hotel ${hotelNumber} image ${i + 1}`}
-                                    className="rounded-lg w-full h-auto object-cover"
-                                />
-                            ))}
-                        </div>
-                    )}
-                </div>
-            ))}
+                if (listItems.length > 0) {
+                    paragraphs.push({ type: 'ul', content: [...listItems] });
+                }
+
+                return (
+                    <div
+                        key={idx}
+                        className="w-full border border-slate-300 rounded-xl p-4 shadow-sm bg-slate-100"
+                    >
+                        <h3 className="font-semibold text-slate-900 text-lg mb-3">
+                            Hotel {hotelNumber}: {name}
+                        </h3>
+                        {paragraphs.map((block, i) => {
+                            if (block.type === 'p') {
+                                return (
+                                    <p
+                                        key={i}
+                                        className="mb-2"
+                                        dangerouslySetInnerHTML={{ __html: formatText(block.content) }}
+                                    />
+                                );
+                            } else if (block.type === 'ul') {
+                                return (
+                                    <ul key={i} className="list-disc list-inside space-y-1 mb-2">
+                                        {block.content.map((item, j) => (
+                                            <li
+                                                key={j}
+                                                dangerouslySetInnerHTML={{ __html: formatText(item) }}
+                                            />
+                                        ))}
+                                    </ul>
+                                );
+                            }
+                            return null;
+                        })}
+                    </div>
+                );
+            })}
         </div>
     );
 }

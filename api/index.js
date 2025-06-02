@@ -43,7 +43,11 @@ function isFlightMessage(text) {
 }
 
 function isHotelMessage(text) {
-    return text.includes('Rate per night:') || text.includes('Description:') || text.includes('Rate');
+    return text.includes('Rate per night:') || text.includes('Description:') || text.includes('Rate') || text.includes("hotel options");
+}
+
+function isFlightBookingMessage(text) {
+    return text.includes('Flight Bookings Summary:') || text.includes
 }
 
 app.get('/', (req, res) => {
@@ -210,7 +214,9 @@ wss.on('connection',(connection, req) => {
                     sender: new mongoose.Types.ObjectId(connection.userId),
                     recipient: new mongoose.Types.ObjectId(recipient),
                     text: text,
-                    type: isFlightMessage(text) ? 'flight' : isHotelMessage(text) ? 'hotel' : 'text',
+                    type: isFlightBookingMessage(text) ? 'flight_booking' : isFlightMessage(text) ? 'flight' : isHotelMessage(text)
+                                ? 'hotel'
+                                : 'text',
                 });
                 console.log(isFlightMessage(text))
                 console.log('Saved Message:', messageDoc);

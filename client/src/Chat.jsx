@@ -7,6 +7,7 @@ import Contact from "./components/Contact.jsx";
 import FlightMessage from "./components/FlightCard.jsx";
 import HotelMessage from "./components/HotelMessage.jsx";
 import WeatherMessage from "./components/WeatherCard.jsx";
+import FlightBookingMessage from "./components/FlightBookingMessage.jsx";
 
 export default function Chat() {
     const [ws, setWs] = useState(null);
@@ -139,22 +140,22 @@ export default function Chat() {
 
                     </div>
 
-                    {/* Offline Users */}
-                    <div className="mt-3">
-                        <div className="text-xs text-slate-500 font-medium px-2">Offline</div>
-                        {Object.entries(offlinePeople)
-                            .filter(([userId, username]) => !!username)
-                            .map(([userId, username]) => (
-                                <Contact
-                                    key={userId}
-                                    id={userId}
-                                    online={false}
-                                    username={username}
-                                    setSelectedUser={setSelectedUser}
-                                    selected={userId === selectedUser}
-                                />
-                            ))}
-                    </div>
+                    {/*/!* Offline Users *!/*/}
+                    {/*<div className="mt-3">*/}
+                    {/*    <div className="text-xs text-slate-500 font-medium px-2">Offline</div>*/}
+                    {/*    {Object.entries(offlinePeople)*/}
+                    {/*        .filter(([userId, username]) => !!username)*/}
+                    {/*        .map(([userId, username]) => (*/}
+                    {/*            <Contact*/}
+                    {/*                key={userId}*/}
+                    {/*                id={userId}*/}
+                    {/*                online={false}*/}
+                    {/*                username={username}*/}
+                    {/*                setSelectedUser={setSelectedUser}*/}
+                    {/*                selected={userId === selectedUser}*/}
+                    {/*            />*/}
+                    {/*        ))}*/}
+                    {/*</div>*/}
                 </div>
                 <div className="p-2 text-center">
                     <button className="text-sm bg-blue-100 py-1 px-2 text-gray-800 border rounded-sm">logout</button>
@@ -187,8 +188,10 @@ export default function Chat() {
                                                     : 'bg-slate-200 text-slate-900'
                                             } whitespace-pre-line`}
                                         >
-                                            {/\d+(\.\d+)?°C/.test(message.text) ?  (
+                                            {/\d+(\.\d+)?°C/.test(message.text) ? (
                                                 <WeatherMessage text={message.text} />
+                                            ) : message.type === 'flight_booking' ? (
+                                                <FlightBookingMessage text={message.text} />
                                             ) : message.type === 'flight' ? (
                                                 <FlightMessage text={message.text} />
                                             ) : message.type === 'hotel' ? (

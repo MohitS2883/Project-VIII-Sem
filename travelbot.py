@@ -35,7 +35,7 @@ credentials = {
 project_id = os.getenv("PROJECT_ID")
 
 llm = ChatWatsonx(
-    model_id="meta-llama/llama-3-3-70b-instruct",
+    model_id="ibm/granite-3-2-8b-instruct",
     url=credentials["url"],
     apikey=credentials["apikey"],
     project_id=project_id,

@@ -18,7 +18,7 @@ load_dotenv()
 # -------------------------------
 # CONFIG
 # -------------------------------
-MODEL_NAME = "qwen3:8b"
+MODEL_NAME = "gemma3:4b"
 CITIES_JSON = "cities.json"
 MONGO_URI = os.getenv("MONGO_URI")
 SERPER_API_KEY = os.getenv("APIKEY")
@@ -59,6 +59,31 @@ def get_user_flight_bookings(user_id: str) -> list[dict]:
         print(f"[DEBUG] Found {len(bookings)} bookings")
         serialized = [serialize_booking(b) for b in bookings]
         print(f"[DEBUG] Serialized bookings: {serialized}")
+        summaries = []
+        for i, booking in enumerate(bookings, 1):
+            name = booking.get('name', 'Unknown')
+            from_city = booking.get('from', 'N/A')
+            to_city = booking.get('to', 'N/A')
+            airline = booking.get('airline', 'Unknown Airline')
+            flight_no = booking.get('flightno') or ''
+            date = booking.get('dateOfJourney', 'N/A')
+            price = booking.get('totalPrice', 'N/A')
+            tickets = booking.get('numberOfTickets', 1)
+
+            flight_str = f"{airline} {flight_no}".strip()
+            ticket_text = f", Tickets: {tickets}" if tickets > 1 else ""
+
+            summary = (f"Booking {i}: {name}\n"
+                f"Route: {from_city} → {to_city}\n"
+                f"Flight: {flight_str}\n"
+                f"Date of Journey: {date}\n"
+                f"Total Price: ${price}{ticket_text}\n")
+
+            summaries.append(summary)
+
+        result_str = "Flight Bookings Summary:\n\n" + "\n".join(summaries)
+        return result_str
+
         return serialized
     except Exception as e:
         print(f"[ERROR] Error fetching flight bookings: {e}")
@@ -489,13 +514,11 @@ def connect_ws():
         time.sleep(5)
 
 if __name__ == "__main__":
-#         print("[DEBUG] Starting WebSocket client")
-#         threading.Thread(target=connect_ws, daemon=True).start()
-#         # Keep main thread alive
-#         while True:
-#             time.sleep(1)
-    chat()
-
+        print("[DEBUG] Starting WebSocket client")
+        threading.Thread(target=connect_ws, daemon=True).start()
+        # Keep main thread alive
+        while True:
+            time.sleep(1)
 
 
 #
