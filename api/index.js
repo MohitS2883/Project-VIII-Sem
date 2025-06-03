@@ -47,7 +47,7 @@ function isHotelMessage(text) {
 }
 
 function isFlightBookingMessage(text) {
-    return text.includes('Flight Bookings Summary:') || text.includes
+    return text.includes('Flight Bookings Summary:')
 }
 
 app.get('/', (req, res) => {
