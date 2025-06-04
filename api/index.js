@@ -55,31 +55,41 @@ app.get('/', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-    const {username, password} = req.body;
-    try{
+    const { username, password, email, phone, age } = req.body;
+
+    try {
         const hashedPassword = await bcrypt.hash(password, bcryptSalt);
         const createdUser = await User.create({
-            username:username,
-            password:hashedPassword})
-            jwt.sign({
-                userId:createdUser._id,
-                username
-            }, jwtsecret,
+            username,
+            password: hashedPassword,
+            email,
+            phone,
+            age,
+        });
+
+        jwt.sign(
+            { userId: createdUser._id, username },
+            jwtsecret,
             {},
-        (err,token) => {
-            if(err) throw err;
-            res.cookie(
-                'token' , token, {sameSite:'none',secure:true})
-                .status(201).json({
-                id: createdUser._id, username: createdUser.username })
-                },
-            )
-    }catch (e) {
+            (err, token) => {
+                if (err) throw err;
+                res
+                    .cookie('token', token, { sameSite: 'none', secure: true })
+                    .status(201)
+                    .json({
+                        userId: createdUser._id,
+                        username: createdUser.username,
+                    });
+            }
+        );
+    } catch (e) {
+        console.log(e)
         if (e.code === 11000) {
-            return res.status(400).json({ error: 'Username already exists' });
+            return res.status(400).json({ error: 'Username or email already exists' });
         }
+        return res.status(500).json({ error: 'Registration failed. Please try again.' });
     }
-})
+});
 
 app.post('/logout', (req, res) => {
     res.cookie('token', '', {

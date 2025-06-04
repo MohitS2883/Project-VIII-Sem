@@ -15,8 +15,9 @@ export default function Chat() {
     const [offlinePeople, setOfflinePeople] = useState({});
     const [selectedUser, setSelectedUser] = useState(null);
     const [newMessageText, setNewMessageText] = useState('');
+    const [userInfoVisible, setUserInfoVisible] = useState(false);
     const [messages, setMessages] = useState([]);
-    const { setId, id, userName, setLoggedInUserName } = useContext(UserContext);
+    const { setId, id, userName, setLoggedInUserName, userInfo, setUserInfo } = useContext(UserContext);
     const divUnderMessages = useRef(null);
     const BOT_ID = "60b8d295f7f6d632d8b53cd4";
     const BOT_USERNAME = "travel-bot";
@@ -44,6 +45,13 @@ export default function Chat() {
             divUnderMessages.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
     }, [messages]);
+
+    useEffect(() => {
+        axios.get('/profile').then(res => {
+            setUserInfo(res.data);
+        });
+    }, []);
+
 
     useEffect(() => {
         if (selectedUser) {
@@ -110,6 +118,7 @@ export default function Chat() {
     const messageWithoutDupes = uniqBy(messages, '_id');
 
     return (
+        <>
         <div className="flex h-screen">
             {/* Sidebar */}
             <div className="bg-gradient-to-b from-slate-100 to-slate-200 w-1/4 border-r border-slate-300 flex flex-col">
@@ -167,7 +176,7 @@ export default function Chat() {
                     {/*</div>*/}
                 </div>
                 <div className="p-4 flex items-center justify-between border-t border-slate-300 bg-slate-200">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setUserInfoVisible(true)}>
                         <div className="bg-slate-100 p-2 rounded-full">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-gray-500">
                                 <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clipRule="evenodd" />
@@ -254,5 +263,34 @@ export default function Chat() {
                 )}
             </div>
         </div>
+            {userInfoVisible && (
+                <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-xl w-80">
+                        <h2 className="text-lg font-semibold mb-2">User Info</h2>
+                        <p><strong>Username:</strong> {userInfo.username}</p>
+                        <p><strong>Email:</strong> {userInfo.email || "—"}</p>
+                        <p><strong>Phone:</strong> {userInfo.phone || "—"}</p>
+                        <p><strong>Age:</strong> {userInfo.age || "—"}</p>
+
+                        <div className="flex justify-end gap-2 mt-4">
+                            <button
+                                onClick={() => {
+                                    setUserInfoVisible(false);
+                                }}
+                                className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+                            >
+                                Close
+                            </button>
+                            <button
+                                onClick={logout}
+                                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }
