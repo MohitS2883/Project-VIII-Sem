@@ -3,11 +3,11 @@ import React from "react";
 export default function FlightBookingMessage({ text }) {
     let unescapedText = text;
     try {
-        // Unescape JSON-like escaped string
-        unescapedText = JSON.parse('"' + text.replace(/"/g, '\\"') + '"');
+        if (typeof text === "string" && text.includes("\\n")) {
+            unescapedText = JSON.parse(text);
+        }
     } catch (e) {
-        // fallback: keep original text if parsing fails
-        unescapedText = text;
+        console.warn("Failed to parse escaped message:", e);
     }
 
     if (!unescapedText.startsWith("Flight Bookings Summary:")) {
@@ -15,18 +15,19 @@ export default function FlightBookingMessage({ text }) {
     }
 
     const bookings = unescapedText
-        .split(/\n\nBooking\s*/)
-        .filter(Boolean)
-        .map((b, i) => (i === 0 && !b.startsWith("Booking") ? "Booking " + b : b));
+        .split(/\n\n(?=Booking \d+:)/)
+        .filter(Boolean);
 
     return (
         <div>
             {bookings.map((booking, idx) => {
                 const lines = booking.split("\n").filter(Boolean);
-                const details = lines.slice(1).map((line) => {
-                    const [key, ...rest] = line.split(":");
-                    return { key: key.trim(), value: rest.join(":").trim() };
-                });
+                const details = lines.slice(1).flatMap((line) =>
+                    line.split(",").map((part) => {
+                        const [key, ...rest] = part.split(":");
+                        return { key: key?.trim(), value: rest.join(":").trim() };
+                    })
+                );
 
                 return (
                     <div key={idx} style={{ marginBottom: "1rem" }}>

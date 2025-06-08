@@ -14,6 +14,9 @@ import websocket
 import threading
 
 load_dotenv()
+import razorpay
+
+razorpay_client = razorpay.Client(auth=(os.getenv("RAZORPAYKEYID"), os.getenv("RAZORPAYKEYSECRET")))
 
 # -------------------------------
 # CONFIG
@@ -61,6 +64,7 @@ def get_user_flight_bookings(user_id: str) -> list[dict]:
         print(f"[DEBUG] Serialized bookings: {serialized}")
         summaries = []
         for i, booking in enumerate(bookings, 1):
+            booking_id = str(booking.get('_id', 'N/A'))
             name = booking.get('name', 'Unknown')
             from_city = booking.get('from', 'N/A')
             to_city = booking.get('to', 'N/A')
@@ -73,7 +77,7 @@ def get_user_flight_bookings(user_id: str) -> list[dict]:
             flight_str = f"{airline} {flight_no}".strip()
             ticket_text = f", Tickets: {tickets}" if tickets > 1 else ""
 
-            summary = (f"Booking {i}: {name}\n"
+            summary = (f"Booking {i} (ID: {booking_id}): {name}\n"
                 f"Route: {from_city} → {to_city}\n"
                 f"Flight: {flight_str}\n"
                 f"Date of Journey: {date}\n"
@@ -244,36 +248,49 @@ def hotels_finder(q, check_in_date, check_out_date, adults=1, rooms=1) -> str:
         return f"Error fetching hotels: {e}"
 
 def create_flight_booking(user_id, name, from_city, to_city, airline, flightno, dateOfJourney, totalPrice, numberOfTickets=None):
-    print(f"[DEBUG] create_flight_booking called with user_id={user_id}, name={name}, from={from_city}, to={to_city}, airline={airline}, flightno={flightno}, dateOfJourney={dateOfJourney}, totalPrice={totalPrice}, numberOfTickets={numberOfTickets}")
     try:
         journey_date = datetime.strptime(dateOfJourney, "%Y-%m-%d")
-        print(f"[DEBUG] Parsed journey date: {journey_date}")
         if journey_date.date() < datetime.now(timezone.utc).date():
-            error_msg = "Journey date cannot be in the past."
-            print(f"[ERROR] {error_msg}")
-            raise ValueError(error_msg)
+            raise ValueError("Journey date cannot be in the past.")
 
-        client = pymongo.MongoClient(MONGO_URI)
-        db = client["test"]
-        doc = {
-            "user": ObjectId(user_id),
-            "name": name,
-            "from": from_city,
-            "to": to_city,
-            "airline": airline,
-            "flightno": flightno,
-            "dateOfJourney": journey_date,
-            "totalPrice": totalPrice,
-            "numberOfTickets": numberOfTickets,
-            "bookedAt": datetime.utcnow(),
+        amount_paise = int(totalPrice * 100)
+        short_user_id = user_id[:6]  # or use just last 6 if you prefer
+        receipt_id = f"flt_{short_user_id}{flightno}{int(time.time())}"[:40]
+
+
+        order = razorpay_client.order.create({
+            "amount": amount_paise,
+            "currency": "INR",
+            "receipt": receipt_id,
+            "payment_capture": 1,
+            "notes": {
+                "user_id": user_id,
+                "flightno": flightno
+            }
+        })
+
+        return {
+            "action": "show_payment_ui",
+            "order_id": order["id"],
+            "amount": amount_paise,
+            "currency": "INR",
+            "key": os.getenv("RAZORPAYKEYID"),
+            "meta": {
+                "user_id": user_id,
+                "name": name,
+                "from_city": from_city,
+                "to_city": to_city,
+                "airline": airline,
+                "flightno": flightno,
+                "dateOfJourney": dateOfJourney,
+                "totalPrice": totalPrice,
+                "numberOfTickets": numberOfTickets
+            },
+            "type": "ignore"
         }
 
-        res = db.flightbookings.insert_one(doc)
-        print(f"[DEBUG] Inserted booking with ID: {res.inserted_id}")
-        return f"Booking confirmed! Your booking ID is {res.inserted_id}."
     except Exception as e:
-        print(f"[ERROR] create_flight_booking error: {e}")
-        return f"Error creating booking: {e}"
+        return {"error": str(e)}
 
 def serialize_booking(booking):
     serialized = {k: str(v) if isinstance(v, (ObjectId, datetime)) else v for k, v in booking.items()}

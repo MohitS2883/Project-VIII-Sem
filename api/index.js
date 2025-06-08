@@ -9,6 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import * as ws from 'ws';
 import Message from "./models/Message.js";
 import {FlightBooking} from "./models/FlightBooking.js";
+import crypto from 'crypto';
 
 const app = express();
 app.use(cors({
@@ -189,6 +190,15 @@ const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+function verifyPaymentSignature({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) {
+    console.log("Inside verify Payment")
+    const generated_signature = crypto
+        .createHmac('sha256', process.env.RAZORPAYKEYSECRET)
+        .update(razorpay_order_id + "|" + razorpay_payment_id)
+        .digest('hex');
+
+    return generated_signature === razorpay_signature;
+}
 const wss = new ws.WebSocketServer({server});
 wss.on('connection',(connection, req) => {
 
@@ -223,8 +233,89 @@ wss.on('connection',(connection, req) => {
         try {
             const messageData = JSON.parse(message.toString());
             const { recipient, text } = messageData;
-            console.log(messageData.text);
+            // Skip saving show_payment_ui messages
+            if (messageData.action === "show_payment_ui") {
+                console.log("Skipping show_payment_ui message:", messageData);
+                return;
+            }
 
+            if (messageData.type === "payment_success") {
+                console.log("✅ Received payment_success on backend:", messageData);
+                const {
+                    razorpay_order_id,
+                    razorpay_payment_id,
+                    razorpay_signature,
+                    booking_meta
+                } = messageData;
+
+                try {
+                    const isValid = verifyPaymentSignature({
+                        razorpay_order_id,
+                        razorpay_payment_id,
+                        razorpay_signature
+                    });
+
+                    if (isValid) {
+                        console.log("Payment signature verified successfully!");
+
+                        const newBooking = await FlightBooking.create({
+                            user: booking_meta.user_id,
+                            name: booking_meta.name,
+                            from: booking_meta.from_city,
+                            to: booking_meta.to_city,
+                            airline: booking_meta.airline,
+                            flightno: booking_meta.flightno,
+                            dateOfJourney: booking_meta.dateOfJourney,
+                            totalPrice: booking_meta.totalPrice,
+                            numberOfTickets: booking_meta.numberOfTickets,
+                            payment_status: "paid"
+                        });
+
+                        // ✅ Save confirmation message to DB
+                        const confirmationText = `✅ Booking confirmed! ID: ${newBooking._id}`;
+                        const messageDoc = await Message.create({
+                            sender: new mongoose.Types.ObjectId(messageData.sender),
+                            recipient: new mongoose.Types.ObjectId(messageData.recipient),
+                            text: confirmationText,
+                            type: "flight_booking"
+                        });
+                        console.log('Saved Message:', messageDoc);
+
+                        connection.send(JSON.stringify({
+                            text: confirmationText,
+                            sender: messageData.sender,
+                            recipient: messageData.recipient,
+                            type: "flight_booking",
+                            _id: messageDoc._id
+                        }));
+
+                    } else {
+                        const errorText = "❌ Payment verification failed. Booking not created.";
+                        console.log(errorText);
+
+                        const messageDoc = await Message.create({
+                            sender: new mongoose.Types.ObjectId(messageData.sender),
+                            recipient: new mongoose.Types.ObjectId(messageData.recipient),
+                            text: errorText,
+                            type: "text"
+                        });
+                        console.log('Saved Message:', messageDoc);
+
+                        connection.send(JSON.stringify({
+                            text: errorText,
+                            sender: messageData.sender,
+                            recipient: messageData.recipient,
+                            type: "text",
+                            _id: messageDoc._id
+                        }));
+                    }
+
+                } catch (error) {
+                    console.error("Payment processing error:", error.message);
+                }
+
+                return;
+            }
             // Defensive checks
             if (!connection.userId || !text) return;
 
@@ -249,7 +340,9 @@ wss.on('connection',(connection, req) => {
                             sender: connection.userId,
                             recipient,
                             _id: messageDoc._id,
-                            type: isFlightMessage(text) ? 'flight' : isHotelMessage(text) ? 'hotel' : 'text'
+                            type: isFlightBookingMessage(text) ? 'flight_booking' : isFlightMessage(text) ? 'flight' : isHotelMessage(text)
+                                ? 'hotel'
+                                : 'text'
                         }))
                     );
             }
